@@ -6,6 +6,21 @@
 }
 
 <div class="container hero-container">
+    <!-- Search Bar on Top Below Header -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+            <div class="search-bar-wrap w-100" style="max-width: 100%;">
+                <input type="text"
+                       id="movieSearchInput"
+                       class="search-bar-input"
+                       placeholder="Search movies by title, genre..." />
+                <button type="button" class="btn-search-shows" onclick="document.getElementById('now-showing').scrollIntoView({ behavior: 'smooth' });">
+                    Search Shows
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Dynamic Banner Showing Latest Releases (Continuous Autoplay) -->
     @if (latestMovies != null && latestMovies.Any())
     {
@@ -112,21 +127,6 @@
             }
         </div>
     }
-
-    <!-- Search Bar -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-8">
-            <div class="search-bar-wrap w-100" style="max-width: 100%;">
-                <input type="text"
-                       id="movieSearchInput"
-                       class="search-bar-input"
-                       placeholder="Search movies by title, genre..." />
-                <button type="button" class="btn-search-shows" onclick="document.getElementById('now-showing').scrollIntoView({ behavior: 'smooth' });">
-                    Search Shows
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Now Showing Section -->
     <div id="now-showing" class="pt-2 mb-5">
