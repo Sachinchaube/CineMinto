@@ -1,6 +1,27 @@
 // CineMento Interactive Client Scripts
 
 document.addEventListener('DOMContentLoaded', function () {
+    // 0. Dynamic Hero Banner Autoplay Motion (Auto-changing after few seconds)
+    const heroCarousel = document.getElementById('latestReleaseCarousel');
+    if (heroCarousel) {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Carousel) {
+            const bsCarousel = bootstrap.Carousel.getOrCreateInstance(heroCarousel, {
+                interval: 3500,
+                ride: 'carousel',
+                pause: false,
+                wrap: true
+            });
+            bsCarousel.cycle();
+        } else if (window.$ && $.fn.carousel) {
+            $('#latestReleaseCarousel').carousel({
+                interval: 3500,
+                pause: false,
+                wrap: true
+            });
+            $('#latestReleaseCarousel').carousel('cycle');
+        }
+    }
+
     // 1. Navbar scroll blur shadow effect
     const navbar = document.querySelector('.cinema-navbar');
     if (navbar) {
