@@ -120,33 +120,51 @@ a:hover {
 .brand-logo-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
+  transition: transform 0.2s ease;
 }
 
-.logo-box {
-  width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, #e5a65d, #c98539);
-  color: #0b111e;
-  border-radius: 8px;
+.brand-logo-wrap:hover {
+  transform: translateY(-1px);
+}
+
+.logo-mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  box-shadow: 0 2px 8px rgba(229, 166, 93, 0.3);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 2px 8px rgba(229, 166, 93, 0.25));
+}
+
+.brand-logo-wrap:hover .logo-mark {
+  transform: scale(1.06) rotate(1deg);
+  filter: drop-shadow(0 4px 14px rgba(229, 166, 93, 0.5));
 }
 
 .brand-title {
   font-family: var(--font-display);
   font-size: 1.35rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #ffffff;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.05em;
+  line-height: 1;
 }
 
 .brand-accent-text {
   color: #e5a65d;
+  font-weight: 900;
+}
+
+.brand-tagline {
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-top: 3px;
+  line-height: 1;
 }
 
 .nav-pill-link {
