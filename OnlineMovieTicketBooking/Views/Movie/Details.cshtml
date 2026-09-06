@@ -2,12 +2,14 @@
 
 @{
     ViewData["Title"] = Model?.MovTitle ?? "Movie Details";
+    var activeShows = Model?.ShowSchedules?.Where(s => s.ShowIsActive).OrderBy(s => s.ShowDate).ThenBy(s => s.ShowStartTime).ToList();
+    var theatreGroups = activeShows?.GroupBy(s => s.Screen?.Theatre?.TheaName ?? "Theatre").ToList();
 }
 
 <div class="container py-4">
     <div class="mb-4">
         <a asp-action="Index" class="btn btn-dark-outline btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back to Catalogue
+            Back to Catalogue
         </a>
     </div>
 
@@ -26,7 +28,7 @@
                     else
                     {
                         <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
-                            <i class="bi bi-film fs-1"></i>
+                            No Poster
                         </div>
                     }
                 </div>
@@ -56,9 +58,9 @@
                 <h1 class="hero-heading mb-2 fs-2">@Model?.MovTitle</h1>
 
                 <div class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-4">
-                    <span><i class="bi bi-clock text-warning me-1"></i> @(Model?.MovDuration) minutes</span>
+                    <span>@(Model?.MovDuration) minutes</span>
                     <span>•</span>
-                    <span><i class="bi bi-calendar3 text-warning me-1"></i> Released: @(Model?.MovRelDate.ToString("dd MMM yyyy") ?? "-")</span>
+                    <span>Released: @(Model?.MovRelDate.ToString("dd MMM yyyy") ?? "-")</span>
                 </div>
 
                 <div class="mb-4">
@@ -68,22 +70,33 @@
                     </p>
                 </div>
 
-                <!-- Available Shows Section -->
-                @if (Model?.ShowSchedules != null && Model.ShowSchedules.Any(s => s.ShowIsActive))
+                <!-- Available Shows Grouped by Theatre -->
+                @if (activeShows != null && activeShows.Any())
                 {
-                    <div class="mb-4 p-3 rounded-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-glass);">
-                        <h6 class="text-warning fw-bold mb-3">Available Screenings</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach (var show in Model.ShowSchedules.Where(s => s.ShowIsActive).OrderBy(s => s.ShowDate).ThenBy(s => s.ShowStartTime))
+                    <div class="mb-4">
+                        <h6 class="text-warning fw-bold text-uppercase small mb-3" style="letter-spacing: 0.05em;">Available Theatres & Showtimes</h6>
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var theatreGroup in theatreGroups)
                             {
-                                <a asp-controller="Booking"
-                                   asp-action="SelectSeats"
-                                   asp-route-showScheduleId="@show.ShowScheduleId"
-                                   class="btn btn-dark-outline btn-sm">
-                                    <i class="bi bi-ticket-perforated text-warning me-1"></i>
-                                    @show.ShowDate.ToString("dd MMM") • @show.ShowStartTime.ToString(@"hh\:mm")
-                                    <small class="text-muted ms-1">(@(show.Screen?.Theatre?.TheaName ?? "Cinema"))</small>
-                                </a>
+                                <div class="theatre-showtimes-box p-3 rounded-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-glass);">
+                                    <div class="theatre-name-tag text-warning fw-bold fs-6 mb-2">
+                                        @theatreGroup.Key
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var show in theatreGroup)
+                                        {
+                                            <a asp-controller="Booking"
+                                               asp-action="SelectSeats"
+                                               asp-route-showScheduleId="@show.ShowScheduleId"
+                                               class="btn-showtime-slot px-3 py-2"
+                                               title="@(show.Screen?.ScreenName) | @show.ShowDate.ToString("dd MMM yyyy")">
+                                                <span class="fw-bold text-white fs-6">@show.ShowStartTime.ToString(@"hh\:mm")</span>
+                                                <span class="slot-date">@show.ShowDate.ToString("dd MMM yyyy")</span>
+                                                <small class="text-muted" style="font-size: 0.65rem;">@(show.Screen?.ScreenName)</small>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
                             }
                         </div>
                     </div>
@@ -93,11 +106,11 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Edit" asp-route-id="@Model?.MovieId" class="btn btn-primary-cinema">
-                            <i class="bi bi-pencil me-1"></i> Edit Movie
+                            Edit Movie
                         </a>
                     }
                     <a asp-controller="Home" asp-action="Index" class="btn btn-dark-outline">
-                        <i class="bi bi-calendar-event me-1"></i> View All Shows On Home
+                        Back to Home
                     </a>
                 </div>
             </div>

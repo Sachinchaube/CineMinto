@@ -57,11 +57,14 @@
                                         </p>
 
                                         <div class="d-flex flex-wrap align-items-center gap-3">
-                                            @if (nextShow != null)
+                                            @if (movie.ShowSchedules != null && movie.ShowSchedules.Any(s => s.ShowIsActive))
                                             {
-                                                <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@nextShow.ShowScheduleId" class="btn btn-primary-cinema btn-lg px-4 py-3 fw-bold">
+                                                <button type="button"
+                                                        class="btn btn-primary-cinema btn-lg px-4 py-3 fw-bold"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#bookModal-@movie.MovieId">
                                                     Book Tickets
-                                                </a>
+                                                </button>
                                             }
                                             else
                                             {
@@ -155,7 +158,7 @@
                 @foreach (var movie in Model)
                 {
                     var activeShows = movie.ShowSchedules?.Where(s => s.ShowIsActive).OrderBy(s => s.ShowDate).ThenBy(s => s.ShowStartTime).ToList();
-                    var primaryShow = activeShows?.FirstOrDefault();
+                    var hasShows = activeShows != null && activeShows.Any();
                     var theatreGroups = activeShows?.GroupBy(s => s.Screen?.Theatre?.TheaName ?? "Theatre").ToList();
 
                     <div class="col-xl-3 col-lg-4 col-sm-6 movie-search-card"
@@ -173,7 +176,7 @@
                             </div>
 
                             <div class="movie-details-clean">
-                                <div class="mb-2">
+                                <div class="mb-3">
                                     <h5 class="movie-title-clean" title="@movie.MovTitle">
                                         <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="text-white text-decoration-none">
                                             @movie.MovTitle
@@ -181,62 +184,77 @@
                                     </h5>
                                     @if (!string.IsNullOrEmpty(movie.MovGenre))
                                     {
-                                        <div class="movie-tags-clean mb-2">
+                                        <div class="movie-tags-clean">
                                             <span class="tag-chip">@movie.MovGenre</span>
                                         </div>
                                     }
                                 </div>
 
-                                <!-- Book Tickets Button & Theatre Time Slots Inside -->
-                                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25">
-                                    @if (activeShows != null && activeShows.Any())
+                                <!-- Book Tickets Button -->
+                                <div class="mt-auto">
+                                    @if (hasShows)
                                     {
-                                        @if (primaryShow != null)
-                                        {
-                                            <a asp-controller="Booking"
-                                               asp-action="SelectSeats"
-                                               asp-route-showScheduleId="@primaryShow.ShowScheduleId"
-                                               class="btn btn-primary-cinema w-100 py-2 fw-bold mb-2">
-                                                Book Tickets
-                                            </a>
-                                        }
-
-                                        <div class="d-flex flex-column gap-2">
-                                            @foreach (var theatreGroup in theatreGroups)
-                                            {
-                                                <div class="theatre-showtimes-box">
-                                                    <div class="theatre-name-tag">
-                                                        @theatreGroup.Key
-                                                    </div>
-                                                    <div class="d-flex flex-wrap gap-1">
-                                                        @foreach (var show in theatreGroup)
-                                                        {
-                                                            <a asp-controller="Booking"
-                                                               asp-action="SelectSeats"
-                                                               asp-route-showScheduleId="@show.ShowScheduleId"
-                                                               class="btn-showtime-slot"
-                                                               title="@(show.Screen?.ScreenName) | @show.ShowDate.ToString("dd MMM yyyy")">
-                                                                <span class="fw-bold text-white">@show.ShowStartTime.ToString(@"hh\:mm")</span>
-                                                                <span class="slot-date">@show.ShowDate.ToString("dd MMM")</span>
-                                                            </a>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
+                                        <button type="button"
+                                                class="btn btn-primary-cinema w-100 py-2 fw-bold"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#bookModal-@movie.MovieId">
+                                            Book Tickets
+                                        </button>
                                     }
                                     else
                                     {
-                                        <div class="d-flex align-items-center justify-content-between pt-1">
-                                            <small class="text-muted" style="font-size: 0.75rem;">No shows scheduled</small>
-                                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-dark-outline btn-cinema-sm" style="font-size: 0.75rem; padding: 4px 10px !important;">
-                                                View Details
-                                            </a>
-                                        </div>
+                                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-dark-outline w-100 py-2">
+                                            View Details
+                                        </a>
                                     }
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Showtime & Theatre Selection Modal for This Movie -->
+                        @if (hasShows && theatreGroups != null)
+                        {
+                            <div class="modal fade" id="bookModal-@movie.MovieId" tabindex="-1" aria-labelledby="bookModalLabel-@movie.MovieId" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content" style="background-color: var(--bg-surface); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); color: #ffffff;">
+                                        <div class="modal-header border-secondary border-opacity-25 pb-3">
+                                            <div>
+                                                <span class="badge bg-warning text-dark fw-bold px-2 py-1 mb-1">SELECT SHOWTIME</span>
+                                                <h4 class="modal-title fw-bold text-white font-display" id="bookModalLabel-@movie.MovieId">@movie.MovTitle</h4>
+                                                <small class="text-secondary">@movie.MovGenre</small>
+                                            </div>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body py-4">
+                                            <div class="d-flex flex-column gap-3">
+                                                @foreach (var theatreGroup in theatreGroups)
+                                                {
+                                                    <div class="theatre-showtimes-box p-3 rounded-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-glass);">
+                                                        <div class="theatre-name-tag text-warning fw-bold fs-6 mb-2">
+                                                            @theatreGroup.Key
+                                                        </div>
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            @foreach (var show in theatreGroup)
+                                                            {
+                                                                <a asp-controller="Booking"
+                                                                   asp-action="SelectSeats"
+                                                                   asp-route-showScheduleId="@show.ShowScheduleId"
+                                                                   class="btn-showtime-slot px-3 py-2"
+                                                                   title="@(show.Screen?.ScreenName) | @show.ShowDate.ToString("dd MMM yyyy")">
+                                                                    <span class="fw-bold text-white fs-6">@show.ShowStartTime.ToString(@"hh\:mm")</span>
+                                                                    <span class="slot-date">@show.ShowDate.ToString("dd MMM yyyy")</span>
+                                                                    <small class="text-muted" style="font-size: 0.65rem;">@(show.Screen?.ScreenName)</small>
+                                                                </a>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
             </div>
