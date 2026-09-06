@@ -616,6 +616,38 @@ a:hover {
   border-radius: 4px;
 }
 
+.btn-showtime-slot {
+  background-color: var(--btn-dark-pill);
+  border: 1px solid var(--border-glass);
+  color: #ffffff;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  text-decoration: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  transition: all 0.15s ease;
+}
+
+.btn-showtime-slot:hover {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: var(--brand-primary-text) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(229, 166, 93, 0.4);
+}
+
+.btn-showtime-slot:hover span {
+  color: #0b111e !important;
+}
+
+.btn-showtime-slot .slot-date {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
 /* ==========================================================================
    Auth / Login / Register
    ========================================================================== */
