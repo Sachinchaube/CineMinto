@@ -70,51 +70,54 @@
                         <span class="screen-label">AUDITORIUM SCREEN THIS WAY</span>
                     </div>
 
-                    <!-- Interactive Seat Matrix -->
+                    <!-- Interactive Seat Matrix Container with Horizontal Scroll & Centered Rows -->
                     @if (Model != null && Model.Any())
                     {
                         var rows = Model.GroupBy(s => s.RowNum).OrderBy(g => g.Key);
-                        <div class="seat-grid-container">
-                            @foreach (var row in rows)
-                            {
-                                <div class="seat-row">
-                                    <span class="seat-row-label">@row.Key</span>
-                                    <div class="d-flex gap-2">
-                                        @foreach (var seat in row.OrderBy(s => s.SeatNum))
-                                        {
-                                            var tierClass = seat.SeatType == SeatType.Recliner ? "seat-recliner" :
-                                                            seat.SeatType == SeatType.Premium ? "seat-premium" : "seat-regular";
-                                            var seatPrice = seat.SeatType == SeatType.Recliner ? reclinerPrice :
-                                                            seat.SeatType == SeatType.Premium ? premiumPrice : regularPrice;
+                        <div class="seat-matrix-wrapper">
+                            <div class="seat-grid-container">
+                                @foreach (var row in rows)
+                                {
+                                    <div class="seat-row">
+                                        <span class="seat-row-label">@row.Key</span>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            @foreach (var seat in row.OrderBy(s => s.SeatNum))
+                                            {
+                                                var tierClass = seat.SeatType == SeatType.Recliner ? "seat-recliner" :
+                                                                seat.SeatType == SeatType.Premium ? "seat-premium" : "seat-regular";
+                                                var seatPrice = seat.SeatType == SeatType.Recliner ? reclinerPrice :
+                                                                seat.SeatType == SeatType.Premium ? premiumPrice : regularPrice;
 
-                                            @if (seat.IsBooked)
-                                            {
-                                                <div class="seat-item seat-booked" title="Seat @(seat.RowNum)@(seat.SeatNum) - Already Reserved">
-                                                    @seat.SeatNum
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div class="seat-checkbox-wrap">
-                                                    <input type="checkbox"
-                                                           name="SeatIds"
-                                                           value="@seat.SeatId"
-                                                           id="seat_@seat.SeatId"
-                                                           data-seat-num="@(seat.RowNum)@(seat.SeatNum)"
-                                                           data-seat-tier="@seat.SeatType"
-                                                           data-price="@seatPrice" />
-                                                    <label for="seat_@seat.SeatId"
-                                                           class="seat-item @tierClass"
-                                                           title="Seat @(seat.RowNum)@(seat.SeatNum) (@seat.SeatType) - ₹@seatPrice">
+                                                @if (seat.IsBooked)
+                                                {
+                                                    <div class="seat-item seat-booked" title="Seat @(seat.RowNum)@(seat.SeatNum) - Already Reserved">
                                                         @seat.SeatNum
-                                                    </label>
-                                                </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="seat-checkbox-wrap">
+                                                        <input type="checkbox"
+                                                               name="SeatIds"
+                                                               class="seat-checkbox"
+                                                               value="@seat.SeatId"
+                                                               id="seat_@seat.SeatId"
+                                                               data-seat-num="@(seat.RowNum)@(seat.SeatNum)"
+                                                               data-seat-tier="@seat.SeatType"
+                                                               data-price="@seatPrice" />
+                                                        <label for="seat_@seat.SeatId"
+                                                               class="seat-item @tierClass"
+                                                               title="Seat @(seat.RowNum)@(seat.SeatNum) (@seat.SeatType) - ₹@seatPrice">
+                                                            @seat.SeatNum
+                                                        </label>
+                                                    </div>
+                                                }
                                             }
-                                        }
+                                        </div>
+                                        <span class="seat-row-label">@row.Key</span>
                                     </div>
-                                    <span class="seat-row-label">@row.Key</span>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     }
                     else
@@ -149,8 +152,8 @@
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <small class="text-muted">Selected Seats (<span id="seatCountText">0</span>)</small>
                         </div>
-                        <div id="selectedSeatsContainer" class="p-2 rounded bg-dark border border-secondary border-opacity-25 small text-muted min-h-35">
-                            No seats selected yet
+                        <div id="selectedSeatsContainer" class="p-2 rounded bg-dark border border-secondary border-opacity-25 small min-h-35 d-flex flex-wrap gap-1 align-items-center">
+                            <span class="text-muted small">No seats selected yet</span>
                         </div>
                     </div>
 

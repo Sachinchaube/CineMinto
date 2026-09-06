@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MovieNest - Premium Cinematic Dark Design System
+   CineMento - Premium Cinematic Dark Design System
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -8,7 +8,7 @@
   --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
 
-  /* Color Palette matching user mockup */
+  /* Color Palette */
   --bg-main: #0b111e;
   --bg-surface: #121b2c;
   --bg-surface-elevated: #18243b;
@@ -205,26 +205,128 @@ a:hover {
 }
 
 /* ==========================================================================
+   Buttons - Universal & High Visibility
+   ========================================================================== */
+.btn-cinema,
+.btn-primary-cinema {
+  background-color: var(--brand-primary) !important;
+  color: var(--brand-primary-text) !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem;
+  border-radius: var(--radius-sm) !important;
+  border: none !important;
+  padding: 9px 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer;
+}
+
+.btn-cinema:hover,
+.btn-primary-cinema:hover {
+  background-color: var(--brand-primary-hover) !important;
+  color: var(--brand-primary-text) !important;
+  box-shadow: 0 2px 12px rgba(229, 166, 93, 0.4) !important;
+}
+
+.btn-cinema-secondary,
+.btn-dark-outline {
+  background-color: var(--btn-dark-pill) !important;
+  border: 1px solid var(--border-glass) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm) !important;
+  padding: 8px 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-cinema-secondary:hover,
+.btn-dark-outline:hover {
+  background-color: var(--btn-dark-pill-hover) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.btn-cinema-danger {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: #ef4444 !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm) !important;
+  padding: 8px 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-cinema-danger:hover {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.btn-cinema-sm {
+  padding: 6px 14px !important;
+  font-size: 0.85rem !important;
+}
+
+.nav-admin-badge {
+  background: rgba(229, 166, 93, 0.15);
+  border: 1px solid rgba(229, 166, 93, 0.3);
+  color: #e5a65d;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-badge.success,
+.status-badge.confirmed {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+
+.status-badge.cancelled {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* ==========================================================================
    Hero Section
    ========================================================================== */
 .hero-container {
-  padding: 50px 0 30px;
-}
-
-.badge-premiere {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  background: transparent;
-  border: 1px solid rgba(229, 166, 93, 0.4);
-  color: #e5a65d;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
+  padding: 40px 0 20px;
 }
 
 .hero-heading {
@@ -357,7 +459,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   Schedule & Movie Cards (Image 2)
+   Schedule & Movie Cards
    ========================================================================== */
 .section-subtitle {
   color: #e5a65d;
@@ -515,7 +617,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   Auth / Login / Register (Image 3)
+   Auth / Login / Register
    ========================================================================== */
 .auth-page-wrap {
   min-height: calc(100vh - 160px);
@@ -564,7 +666,7 @@ a:hover {
   display: block;
 }
 
-/* Solid light input box from Image 3 */
+/* Solid light input box */
 .form-control-clean {
   background-color: #eef4fc !important;
   border: 1px solid #d0dbe9 !important;
@@ -639,41 +741,58 @@ a:hover {
   text-transform: uppercase;
 }
 
-/* Seat Checkboxes */
+/* Seat Matrix & Grid */
+.seat-matrix-wrapper {
+  overflow-x: auto;
+  padding: 15px 5px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .seat-grid-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  overflow-x: auto;
-  padding: 10px;
+  min-width: max-content;
+  margin: 0 auto;
 }
 
 .seat-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-width: max-content;
 }
 
 .seat-row-label {
-  width: 24px;
+  width: 28px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   text-align: center;
+  user-select: none;
 }
 
 .seat-checkbox-wrap {
   position: relative;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
 }
 
 .seat-checkbox-wrap input[type="checkbox"] {
   position: absolute;
-  opacity: 0;
-  cursor: pointer;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  cursor: pointer;
   z-index: 2;
+  margin: 0;
 }
 
 .seat-item {
@@ -687,6 +806,7 @@ a:hover {
   font-weight: 700;
   transition: all 0.15s ease;
   user-select: none;
+  cursor: pointer;
 }
 
 .seat-item.seat-regular {
@@ -740,33 +860,32 @@ a:hover {
   border-radius: var(--radius-lg);
 }
 
-.btn-primary-cinema {
-  background-color: var(--brand-primary);
-  color: var(--brand-primary-text);
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-  border: none;
-  padding: 9px 20px;
-  transition: all 0.2s ease;
-}
-
-.btn-primary-cinema:hover {
-  background-color: var(--brand-primary-hover);
-  color: var(--brand-primary-text);
-}
-
-.btn-dark-outline {
-  background-color: var(--btn-dark-pill);
-  border: 1px solid var(--border-glass);
+/* Form Controls Dark Theme */
+.form-label {
   color: #ffffff;
   font-weight: 600;
-  border-radius: var(--radius-sm);
-  padding: 8px 18px;
-  transition: all 0.2s ease;
+  margin-bottom: 6px;
 }
 
-.btn-dark-outline:hover {
-  background-color: var(--btn-dark-pill-hover);
+.form-control,
+.form-select {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-glass);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--bg-surface-elevated);
+  border-color: #e5a65d;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(229, 166, 93, 0.2);
+}
+
+.form-select option {
+  background-color: #18243b;
   color: #ffffff;
 }
 
