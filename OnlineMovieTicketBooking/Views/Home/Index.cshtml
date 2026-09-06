@@ -1,0 +1,170 @@
+@model List<OnlineMovieTicketBooking.Models.MovieModel>
+
+@{
+    ViewData["Title"] = "Book Movie Tickets Online";
+    var featuredMovie = Model?.FirstOrDefault();
+}
+
+<div class="container hero-container">
+    <!-- Hero Section (Matches Image 1) -->
+    <div class="row align-items-center g-5 mb-5 pb-3">
+        <!-- Left: Hero Copy & Search Bar -->
+        <div class="col-lg-7">
+            <h1 class="hero-heading">
+                Book Movie Tickets Online with Ease
+            </h1>
+            
+            <p class="hero-description">
+                Browse the latest releases, find showtimes at top multiplexes near you, select your preferred seats, and get instant digital passes.
+            </p>
+
+            <div class="search-bar-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text"
+                       id="movieSearchInput"
+                       class="search-bar-input"
+                       placeholder="Search by movie title, language or genre..." />
+                <button type="button" class="btn-search-shows" onclick="document.getElementById('now-showing').scrollIntoView({ behavior: 'smooth' });">
+                    Search Shows
+                </button>
+            </div>
+        </div>
+
+        <!-- Right: Featured Spotlight Poster -->
+        <div class="col-lg-5 d-none d-lg-block">
+            @if (featuredMovie != null)
+            {
+                <div class="hero-featured-card">
+                    <img src="@(string.IsNullOrEmpty(featuredMovie.MovPosterUrl) ? "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80" : featuredMovie.MovPosterUrl)"
+                         alt="@featuredMovie.MovTitle"
+                         class="hero-featured-img"
+                         onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80';" />
+                    
+                    <div class="hero-rating-badge">
+                        <i class="bi bi-star-fill text-warning"></i> 9.2
+                    </div>
+
+                    <div class="hero-featured-action">
+                        @{
+                            var nextShow = featuredMovie.ShowSchedules?.FirstOrDefault(s => s.ShowIsActive);
+                        }
+                        @if (nextShow != null)
+                        {
+                            <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@nextShow.ShowScheduleId" class="btn-hero-book text-decoration-none">
+                                <i class="bi bi-ticket-perforated"></i> Select Showtimes
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@featuredMovie.MovieId" class="btn-hero-book text-decoration-none">
+                                <i class="bi bi-info-circle"></i> View Movie Details
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Now Showing Section (Matches Image 2) -->
+    <div id="now-showing" class="pt-4 mb-5">
+        <div class="d-flex align-items-end justify-content-between mb-4">
+            <div>
+                <div class="section-subtitle">CURRENT SCHEDULE</div>
+                <h2 class="section-title">Now Showing in Theatres</h2>
+            </div>
+            <div>
+                <a asp-controller="Movie" asp-action="Index" class="btn-catalog-pill text-decoration-none">
+                    View Full Catalog <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="admin-card text-center py-5 p-4">
+                <div class="mb-3 text-muted">
+                    <i class="bi bi-film fs-1"></i>
+                </div>
+                <h4 class="text-white">No Movies Currently Scheduled</h4>
+                <p class="text-secondary small max-w-md mx-auto mb-4">
+                    New movie showtimes and blockbuster schedules will be listed shortly.
+                </p>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Movie" asp-action="Create" class="btn btn-primary-cinema">
+                        <i class="bi bi-plus-lg me-1"></i> Add New Movie
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="row g-4" id="movieCardGrid">
+                @foreach (var movie in Model)
+                {
+                    var activeShow = movie.ShowSchedules?.FirstOrDefault(s => s.ShowIsActive);
+                    <div class="col-xl-3 col-lg-4 col-sm-6 movie-search-card"
+                         data-title="@(movie.MovTitle?.ToLower() ?? "")"
+                         data-genre="@(movie.MovGenre?.ToLower() ?? "")"
+                         data-language="@(movie.MovLanguage?.ToLower() ?? "")">
+                        
+                        <div class="movie-card-clean">
+                            <div class="movie-poster-wrap">
+                                <img src="@(string.IsNullOrEmpty(movie.MovPosterUrl) ? "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" : movie.MovPosterUrl)"
+                                     alt="@movie.MovTitle"
+                                     onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80';" />
+                                
+                                <div class="movie-card-rating">
+                                    <i class="bi bi-star-fill text-warning"></i> 9.2
+                                </div>
+
+                                <div class="movie-card-book-wrap">
+                                    @if (activeShow != null)
+                                    {
+                                        <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@activeShow.ShowScheduleId" class="btn-book-tickets">
+                                            Book Tickets
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn-book-tickets">
+                                            Book Tickets
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="movie-details-clean">
+                                <div>
+                                    <h5 class="movie-title-clean" title="@movie.MovTitle">
+                                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="text-white text-decoration-none">
+                                            @movie.MovTitle
+                                        </a>
+                                    </h5>
+                                    <div class="movie-meta-clean">
+                                        @(string.IsNullOrEmpty(movie.MovLanguage) ? "English" : movie.MovLanguage) • @movie.MovDuration min
+                                    </div>
+                                </div>
+                                <div class="movie-tags-clean">
+                                    @if (!string.IsNullOrEmpty(movie.MovGenre))
+                                    {
+                                        <span class="tag-chip">@movie.MovGenre</span>
+                                    }
+                                    <span class="tag-chip">@movie.MovRelDate.Year</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- No Results Found Indicator for Search Filter -->
+            <div id="noSearchResults" class="admin-card text-center py-5 d-none mt-4">
+                <i class="bi bi-search text-muted fs-2 mb-2"></i>
+                <h5 class="text-white">No Matching Movies Found</h5>
+                <p class="text-muted small mb-0">Try searching for a different title, genre, or language.</p>
+            </div>
+        }
+    </div>
+</div>

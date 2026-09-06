@@ -1,0 +1,178 @@
+@model List<OnlineMovieTicketBooking.ViewModels.SeatVM>
+@using OnlineMovieTicketBooking.Models
+
+@{
+    ViewData["Title"] = "Select Seats";
+    var show = ViewBag.Show as OnlineMovieTicketBooking.Models.ShowScheduleModel;
+    var regularPrice = show?.ShowSeatPrices?.FirstOrDefault(x => x.SeatType == SeatType.Regular)?.ShowSeatPrice ?? 150;
+    var premiumPrice = show?.ShowSeatPrices?.FirstOrDefault(x => x.SeatType == SeatType.Premium)?.ShowSeatPrice ?? 250;
+    var reclinerPrice = show?.ShowSeatPrices?.FirstOrDefault(x => x.SeatType == SeatType.Recliner)?.ShowSeatPrice ?? 400;
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-dark-outline btn-sm mb-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Movies
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="section-subtitle">SEAT RESERVATION</div>
+                <h2 class="text-white fw-bold mb-1 font-display">
+                    @(show?.Movie?.MovTitle ?? "Movie")
+                </h2>
+                <div class="d-flex flex-wrap align-items-center gap-2 text-secondary small">
+                    <span><i class="bi bi-geo-alt text-warning me-1"></i>@(show?.Screen?.Theatre?.TheaName ?? "Theatre")</span>
+                    <span>•</span>
+                    <span><i class="bi bi-display text-info me-1"></i>@(show?.Screen?.ScreenName ?? "Screen 1")</span>
+                    <span>•</span>
+                    <span><i class="bi bi-calendar3 text-warning me-1"></i>@(show?.ShowDate.ToString("ddd, dd MMM yyyy") ?? "")</span>
+                    <span>•</span>
+                    <span><i class="bi bi-clock text-info me-1"></i>@(show?.ShowStartTime.ToString(@"hh\:mm") ?? "") - @(show?.ShowEndTime.ToString(@"hh\:mm") ?? "")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="seatBookingForm">
+        <input type="hidden" name="ShowScheduleId" value="@show?.ShowScheduleId" />
+
+        <div class="row g-4">
+            <!-- Main Seating Area -->
+            <div class="col-lg-8">
+                <div class="admin-card p-4">
+                    <!-- Seat Tier Price Legend -->
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25 small">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="seat-item seat-regular" style="width: 20px; height: 20px; font-size: 0;"></span>
+                            <span class="text-secondary">Regular <strong>(₹@regularPrice)</strong></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="seat-item seat-premium" style="width: 20px; height: 20px; font-size: 0;"></span>
+                            <span class="text-secondary">Premium <strong>(₹@premiumPrice)</strong></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="seat-item seat-recliner" style="width: 20px; height: 20px; font-size: 0;"></span>
+                            <span class="text-secondary">Recliner <strong>(₹@reclinerPrice)</strong></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="seat-item" style="width: 20px; height: 20px; background: #e5a65d;"></span>
+                            <span class="text-secondary">Selected</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="seat-item seat-booked" style="width: 20px; height: 20px; font-size: 0;"></span>
+                            <span class="text-secondary">Sold Out</span>
+                        </div>
+                    </div>
+
+                    <!-- Cinema Screen Curve -->
+                    <div class="cinema-screen-wrap">
+                        <div class="screen-arc"></div>
+                        <span class="screen-label">AUDITORIUM SCREEN THIS WAY</span>
+                    </div>
+
+                    <!-- Interactive Seat Matrix -->
+                    @if (Model != null && Model.Any())
+                    {
+                        var rows = Model.GroupBy(s => s.RowNum).OrderBy(g => g.Key);
+                        <div class="seat-grid-container">
+                            @foreach (var row in rows)
+                            {
+                                <div class="seat-row">
+                                    <span class="seat-row-label">@row.Key</span>
+                                    <div class="d-flex gap-2">
+                                        @foreach (var seat in row.OrderBy(s => s.SeatNum))
+                                        {
+                                            var tierClass = seat.SeatType == SeatType.Recliner ? "seat-recliner" :
+                                                            seat.SeatType == SeatType.Premium ? "seat-premium" : "seat-regular";
+                                            var seatPrice = seat.SeatType == SeatType.Recliner ? reclinerPrice :
+                                                            seat.SeatType == SeatType.Premium ? premiumPrice : regularPrice;
+
+                                            @if (seat.IsBooked)
+                                            {
+                                                <div class="seat-item seat-booked" title="Seat @(seat.RowNum)@(seat.SeatNum) - Already Reserved">
+                                                    @seat.SeatNum
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="seat-checkbox-wrap">
+                                                    <input type="checkbox"
+                                                           name="SeatIds"
+                                                           value="@seat.SeatId"
+                                                           id="seat_@seat.SeatId"
+                                                           data-seat-num="@(seat.RowNum)@(seat.SeatNum)"
+                                                           data-seat-tier="@seat.SeatType"
+                                                           data-price="@seatPrice" />
+                                                    <label for="seat_@seat.SeatId"
+                                                           class="seat-item @tierClass"
+                                                           title="Seat @(seat.RowNum)@(seat.SeatNum) (@seat.SeatType) - ₹@seatPrice">
+                                                        @seat.SeatNum
+                                                    </label>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="seat-row-label">@row.Key</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-grid-3x3-gap fs-1 mb-2"></i>
+                            <p>No seats mapped for this screen.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Booking Order Summary Sidebar -->
+            <div class="col-lg-4">
+                <div class="order-summary-card">
+                    <h5 class="text-white fw-bold mb-3 pb-2 border-bottom border-secondary border-opacity-25 font-display">
+                        <i class="bi bi-receipt text-warning me-2"></i>Booking Summary
+                    </h5>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Movie</small>
+                        <span class="text-white fw-bold fs-6">@(show?.Movie?.MovTitle ?? "Movie")</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Screen & Time</small>
+                        <span class="text-secondary small">@(show?.Screen?.Theatre?.TheaName) - @(show?.Screen?.ScreenName)</span>
+                        <div class="text-light small fw-semibold mt-1">@show?.ShowDate.ToString("ddd, dd MMM yyyy") | @show?.ShowStartTime.ToString(@"hh\:mm")</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted">Selected Seats (<span id="seatCountText">0</span>)</small>
+                        </div>
+                        <div id="selectedSeatsContainer" class="p-2 rounded bg-dark border border-secondary border-opacity-25 small text-muted min-h-35">
+                            No seats selected yet
+                        </div>
+                    </div>
+
+                    <hr class="border-secondary border-opacity-25 my-3" />
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="text-white fw-bold">Total Amount</span>
+                        <span class="text-warning fs-4 fw-black font-display">₹<span id="totalPriceText">0</span></span>
+                    </div>
+
+                    <button type="submit"
+                            id="btnSubmitSeats"
+                            class="btn btn-primary-cinema w-100 py-3 fw-bold fs-6"
+                            disabled>
+                        Proceed to Payment <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+
+                    <div class="mt-3 text-center">
+                        <small class="text-muted"><i class="bi bi-shield-check me-1"></i> Instant Confirmation & QR Ticket</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

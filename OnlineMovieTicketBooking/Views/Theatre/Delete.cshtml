@@ -1,0 +1,54 @@
+@model OnlineMovieTicketBooking.ViewModels.TheatreVM
+
+@{
+    ViewData["Title"] = "Delete Theatre";
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="btn btn-cinema-secondary btn-cinema-sm">
+        <i class="bi bi-arrow-left"></i> Back to Theatres
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="admin-card p-4 p-md-5 border border-danger border-opacity-50">
+            <div class="text-center mb-4">
+                <div class="p-3 bg-danger bg-opacity-15 text-danger rounded-circle d-inline-flex mb-3">
+                    <i class="bi bi-exclamation-triangle-fill display-5"></i>
+                </div>
+                <h3 class="text-white fw-bold font-display">Delete Theatre</h3>
+                <p class="text-secondary small">
+                    Are you sure you want to permanently remove this theatre from the system?
+                </p>
+            </div>
+
+            <div class="p-3 bg-dark bg-opacity-50 rounded-3 border border-secondary border-opacity-25 mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted small">Theatre Name</span>
+                    <strong class="text-white">@Model?.TheaName</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted small">City</span>
+                    <span class="text-secondary">@Model?.TheaCIty</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted small">Address</span>
+                    <span class="text-secondary text-end" style="max-width: 250px;">@Model?.TheaAddress</span>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="TheatreId" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-cinema-danger w-100 py-2">
+                        <i class="bi bi-trash"></i> Confirm Delete
+                    </button>
+                    <a asp-action="Index" class="btn btn-cinema-secondary w-100 py-2 text-center justify-content-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

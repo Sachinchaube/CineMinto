@@ -1,0 +1,110 @@
+@model OnlineMovieTicketBooking.Models.MovieModel
+
+@{
+    ViewData["Title"] = "Add New Movie";
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="btn btn-cinema-secondary btn-cinema-sm">
+        <i class="bi bi-arrow-left"></i> Back to Movies
+    </a>
+</div>
+
+<div class="admin-card">
+    <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+        <div class="cinema-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
+            <i class="bi bi-plus-circle"></i>
+        </div>
+        <div>
+            <h3 class="text-white fw-bold mb-0 font-display">Add New Movie</h3>
+            <p class="text-secondary small mb-0">Fill in movie metadata, runtime, genres, and poster link.</p>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="MovTitle" class="form-label">Movie Title</label>
+                        <input asp-for="MovTitle" class="form-control" placeholder="e.g. Oppenheimer, Dune: Part Two" />
+                        <span asp-validation-for="MovTitle" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="MovDescription" class="form-label">Synopsis / Description</label>
+                        <textarea asp-for="MovDescription" class="form-control" rows="4" placeholder="Brief story overview, cast, and plot details..."></textarea>
+                        <span asp-validation-for="MovDescription" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="MovGenre" class="form-label">Genre</label>
+                        <input asp-for="MovGenre" class="form-control" placeholder="e.g. Action, Sci-Fi, Drama" />
+                        <span asp-validation-for="MovGenre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="MovLanguage" class="form-label">Language</label>
+                        <input asp-for="MovLanguage" class="form-control" placeholder="e.g. English, Hindi, Spanish" />
+                        <span asp-validation-for="MovLanguage" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="MovDuration" class="form-label">Duration (in minutes)</label>
+                        <input asp-for="MovDuration" type="number" class="form-control" placeholder="e.g. 148" />
+                        <span asp-validation-for="MovDuration" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="MovRelDate" class="form-label">Release Date</label>
+                        <input asp-for="MovRelDate" type="date" class="form-control" />
+                        <span asp-validation-for="MovRelDate" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="MovPosterUrl" class="form-label">Poster Image URL</label>
+                        <input asp-for="MovPosterUrl" id="posterUrlInput" class="form-control" placeholder="https://example.com/poster.jpg" />
+                        <span asp-validation-for="MovPosterUrl" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <div class="form-check form-switch p-0 d-flex align-items-center gap-3">
+                            <input asp-for="MovIsActive" class="form-check-input ms-0" type="checkbox" style="width: 2.5em; height: 1.3em;" id="movActiveSwitch" />
+                            <label class="form-check-label text-white fw-bold" for="movActiveSwitch">
+                                Active / Currently Showing
+                            </label>
+                        </div>
+                        <span asp-validation-for="MovIsActive" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Poster Preview Column -->
+            <div class="col-lg-4 text-center">
+                <label class="form-label d-block text-start">Live Poster Preview</label>
+                <div class="movie-poster-container rounded-4 shadow-lg border border-secondary border-opacity-25" style="max-width: 240px; margin: 0 auto; min-height: 320px;">
+                    <img id="posterPreviewImg" src="" alt="Poster Preview" class="movie-poster-img" style="display: none;" />
+                    <div id="posterPlaceholder" class="movie-poster-fallback">
+                        <i class="bi bi-image"></i>
+                        <span class="small">Enter a valid URL to preview</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4 pt-3 border-top border-secondary border-opacity-25">
+            <button type="submit" class="btn btn-cinema">
+                <i class="bi bi-check-lg"></i> Create Movie
+            </button>
+            <a asp-action="Index" class="btn btn-cinema-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

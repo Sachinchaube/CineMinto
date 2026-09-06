@@ -1,0 +1,149 @@
+@model List<OnlineMovieTicketBooking.Models.BookingModel>
+
+@{
+    ViewData["Title"] = "All Bookings Ledger";
+    var totalBookings = Model?.Count ?? 0;
+    var totalRevenue = Model?.Sum(b => b.TotalAmount) ?? 0;
+    var confirmedCount = Model?.Count(b => b.BookingStatus.ToString().Equals("Confirmed", StringComparison.OrdinalIgnoreCase)) ?? 0;
+    var pendingCount = Model?.Count(b => b.BookingStatus.ToString().Equals("Pending", StringComparison.OrdinalIgnoreCase)) ?? 0;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="nav-admin-badge">ADMIN CONSOLE</span>
+            <h2 class="text-white fw-bold mb-0 font-display">All Customer Bookings</h2>
+        </div>
+        <p class="text-secondary small mb-0">Complete ledger of cinema reservations, payment records, and seat assignments.</p>
+    </div>
+</div>
+
+<!-- Quick Metric Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="admin-card p-3 mb-0">
+            <span class="text-muted small text-uppercase fw-bold">Total Reservations</span>
+            <h3 class="text-white fw-bold mb-0 font-display mt-1">@totalBookings</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="admin-card p-3 mb-0">
+            <span class="text-muted small text-uppercase fw-bold">Gross Revenue</span>
+            <h3 class="text-info fw-bold mb-0 font-display mt-1">₹@totalRevenue</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="admin-card p-3 mb-0">
+            <span class="text-muted small text-uppercase fw-bold">Confirmed Passes</span>
+            <h3 class="text-success fw-bold mb-0 font-display mt-1">@confirmedCount</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="admin-card p-3 mb-0">
+            <span class="text-muted small text-uppercase fw-bold">Pending Approval</span>
+            <h3 class="text-warning fw-bold mb-0 font-display mt-1">@pendingCount</h3>
+        </div>
+    </div>
+</div>
+
+@if (Model == null || Model.Count == 0)
+{
+    <div class="admin-card text-center py-5">
+        <i class="bi bi-receipt text-muted display-4 mb-3"></i>
+        <h4 class="text-white font-display">No Bookings Recorded</h4>
+        <p class="text-secondary">Customer reservations and payment receipts will show up here.</p>
+    </div>
+}
+else
+{
+    <div class="admin-card">
+        <div class="table-responsive">
+            <table class="cinema-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>User Email</th>
+                        <th>Movie & Screen</th>
+                        <th>Show Schedule</th>
+                        <th>Reserved Seats</th>
+                        <th>Amount</th>
+                        <th>Booking Status</th>
+                        <th>Payment Status</th>
+                        <th>Transaction ID</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var booking in Model)
+                    {
+                        var isConfirmed = booking.BookingStatus.ToString().Equals("Confirmed", StringComparison.OrdinalIgnoreCase);
+                        var isPending = booking.BookingStatus.ToString().Equals("Pending", StringComparison.OrdinalIgnoreCase);
+
+                        <tr>
+                            <td>
+                                <strong class="text-white font-monospace">@booking.BookingReference</strong>
+                            </td>
+
+                            <td>
+                                <span class="text-secondary small">@(booking.User?.Email ?? "Guest")</span>
+                            </td>
+
+                            <td>
+                                <div class="text-white fw-bold">@(booking.ShowSchedule?.Movie?.MovTitle ?? "Movie")</div>
+                                <div class="text-muted small">@(booking.ShowSchedule?.Screen?.ScreenName ?? "Screen 1")</div>
+                            </td>
+
+                            <td>
+                                <div class="text-white">@(booking.ShowSchedule?.ShowDate.ToString("dd MMM yyyy") ?? "-")</div>
+                                <div class="text-muted small">
+                                    @(booking.ShowSchedule?.ShowStartTime.ToString(@"hh\:mm")) - @(booking.ShowSchedule?.ShowEndTime.ToString(@"hh\:mm"))
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="d-flex flex-wrap gap-1" style="max-width: 150px;">
+                                    @if (booking.BookingSeats != null)
+                                    {
+                                        @foreach (var seat in booking.BookingSeats)
+                                        {
+                                            <span class="seat-chip" style="font-size: 0.72rem; padding: 0.1rem 0.4rem;">
+                                                @(seat.Seat?.RowNum)@(seat.Seat?.SeatNum)
+                                            </span>
+                                        }
+                                    }
+                                </div>
+                            </td>
+
+                            <td>
+                                <strong class="text-info font-monospace">₹@booking.TotalAmount</strong>
+                            </td>
+
+                            <td>
+                                <span class="status-badge @(isConfirmed ? "confirmed" : (isPending ? "pending" : "cancelled"))">
+                                    <i class="bi @(isConfirmed ? "bi-check-circle-fill" : (isPending ? "bi-hourglass-split" : "bi-x-circle-fill"))"></i>
+                                    @booking.BookingStatus
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge @(booking.Payment?.PaymentStatus.ToString().Equals("Completed", StringComparison.OrdinalIgnoreCase) == true ? "bg-success bg-opacity-25 text-success border border-success border-opacity-50" : "bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50")">
+                                    @(booking.Payment?.PaymentStatus.ToString() ?? "Pending")
+                                </span>
+                                @if (booking.Payment?.PaymentMethod != null)
+                                {
+                                    <div class="text-muted small mt-1">@booking.Payment?.PaymentMethod</div>
+                                }
+                            </td>
+
+                            <td>
+                                <span class="text-muted small font-monospace">
+                                    @(string.IsNullOrEmpty(booking.Payment?.TransactionId) ? "N/A" : booking.Payment?.TransactionId)
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

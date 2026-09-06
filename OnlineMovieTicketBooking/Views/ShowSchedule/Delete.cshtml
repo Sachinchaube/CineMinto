@@ -1,0 +1,62 @@
+@model OnlineMovieTicketBooking.ViewModels.ShowScheduleVM
+
+@{
+    ViewData["Title"] = "Delete Show Schedule";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="admin-card p-4 p-md-5 border-danger border-opacity-50">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex p-3 rounded-circle bg-danger bg-opacity-10 text-danger mb-3">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                    <h2 class="fw-bold text-white mb-1">Delete Show Schedule?</h2>
+                    <p class="text-muted">Are you sure you want to remove this scheduled screening? Existing bookings may be affected.</p>
+                </div>
+
+                <div class="p-3 rounded-3 mb-4" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass);">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Movie ID / Title</small>
+                            <span class="text-white fw-semibold">
+                                @(Model.Movie?.MovTitle ?? $"Movie #{Model.MovieId}")
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Screen ID / Name</small>
+                            <span class="text-white fw-semibold">
+                                @(Model.Screen?.ScreenName ?? $"Screen #{Model.ScreenId}")
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Show Date</small>
+                            <span class="text-white fw-semibold">@Model.ShowDate.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Time Slot</small>
+                            <span class="text-white fw-semibold">@Model.ShowStartTime - @Model.ShowEndTime</span>
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted d-block">Ticket Pricing</small>
+                            <span class="text-white fw-semibold">Regular: ₹@Model.RegularPrice | Premium: ₹@Model.PremiumPrice | Recliner: ₹@Model.ReclinerPrice</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="ShowScheduleId" />
+                    <div class="d-flex gap-3 justify-content-end">
+                        <a asp-action="Index" class="btn btn-dark-outline px-4">
+                            <i class="bi bi-x me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-trash-fill me-1"></i> Confirm Delete
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error Occurred";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div class="admin-card p-5 border-danger border-opacity-40">
+                <div class="d-inline-flex p-4 rounded-circle bg-danger bg-opacity-10 text-danger mb-4">
+                    <i class="bi bi-exclamation-octagon fs-1"></i>
+                </div>
+
+                <h2 class="fw-bold text-white mb-2">Something Went Wrong</h2>
+                <p class="text-muted mb-4">An unexpected error occurred while processing your cinema request.</p>
+
+                @if (Model.ShowRequestId)
+                {
+                    <div class="p-3 rounded-3 mb-4 text-start" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass);">
+                        <small class="text-muted d-block mb-1">Request Tracking ID</small>
+                        <code class="text-warning fs-6">@Model.RequestId</code>
+                    </div>
+                }
+
+                <div class="d-flex gap-2 justify-content-center">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary-cinema">
+                        <i class="bi bi-house-door me-1"></i> Return Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

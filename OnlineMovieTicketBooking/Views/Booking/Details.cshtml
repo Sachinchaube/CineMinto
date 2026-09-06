@@ -1,0 +1,129 @@
+@model OnlineMovieTicketBooking.Models.BookingModel
+
+@{
+    ViewData["Title"] = "Ticket Details";
+    var isConfirmed = Model.BookingStatus.ToString().Equals("Confirmed", StringComparison.OrdinalIgnoreCase);
+    var isPending = Model.BookingStatus.ToString().Equals("Pending", StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="container py-4">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <a asp-action="MyBookings" class="btn btn-dark-outline btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to My Bookings
+        </a>
+        <button onclick="window.print()" class="btn btn-primary-cinema btn-sm">
+            <i class="bi bi-printer me-1"></i> Print / Save Ticket
+        </button>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="admin-card p-4 p-md-5 position-relative overflow-hidden" style="background: var(--bg-surface); border: 1px solid var(--border-glass);">
+                <div class="position-absolute top-0 start-0 end-0" style="height: 4px; background: #e5a65d;"></div>
+
+                <!-- Ticket Header -->
+                <div class="d-flex flex-wrap justify-content-between align-items-start pb-4 mb-4 border-bottom border-secondary border-opacity-25 gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fs-4 fw-bold text-white font-display">Cine<span class="text-warning">Mento</span> E-Ticket</span>
+                        </div>
+                        <span class="text-secondary small">Booking Ref: <strong class="text-white font-monospace">@Model.BookingReference</strong></span>
+                    </div>
+                    <div class="text-md-end">
+                        @if (isConfirmed)
+                        {
+                            <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 px-3 py-1 fw-bold">Confirmed</span>
+                        }
+                        else if (isPending)
+                        {
+                            <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 px-3 py-1 fw-bold">Pending</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger bg-opacity-20 text-danger border border-danger border-opacity-30 px-3 py-1 fw-bold">Cancelled</span>
+                        }
+                        <div class="text-secondary small mt-1">Booked on @Model.BookingDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+                    </div>
+                </div>
+
+                <!-- Movie & Show Details -->
+                <div class="mb-4">
+                    <div class="section-subtitle">SCREENING DETAILS</div>
+                    <h3 class="text-white fw-bold mb-3 font-display">@(Model.ShowSchedule?.Movie?.MovTitle ?? "Movie")</h3>
+
+                    <div class="row g-3 p-3 rounded-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-glass);">
+                        <div class="col-sm-6 col-md-3">
+                            <span class="text-muted small d-block">Theatre</span>
+                            <strong class="text-white">@(Model.ShowSchedule?.Screen?.Theatre?.TheaName ?? "Theatre")</strong>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <span class="text-muted small d-block">Screen</span>
+                            <strong class="text-white">@(Model.ShowSchedule?.Screen?.ScreenName ?? "Screen 1")</strong>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <span class="text-muted small d-block">Show Date</span>
+                            <strong class="text-white">@(Model.ShowSchedule?.ShowDate.ToString("ddd, dd MMM yyyy") ?? "-")</strong>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <span class="text-muted small d-block">Show Time</span>
+                            <strong class="text-white">@(Model.ShowSchedule?.ShowStartTime.ToString(@"hh\:mm") ?? "-")</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seats Breakdown -->
+                <div class="mb-4">
+                    <h5 class="text-white fw-bold mb-3 font-display">
+                        Reserved Seats & Pricing
+                    </h5>
+
+                    @if (Model.BookingSeats != null && Model.BookingSeats.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="cinema-table">
+                                <thead>
+                                    <tr>
+                                        <th>Seat Number</th>
+                                        <th>Seat Tier</th>
+                                        <th class="text-end">Seat Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var seat in Model.BookingSeats)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <span class="fw-bold text-white">
+                                                    @(seat.Seat?.RowNum)@(seat.Seat?.SeatNum)
+                                                </span>
+                                            </td>
+                                            <td class="text-secondary">@(seat.Seat?.SeatType.ToString() ?? "Regular")</td>
+                                            <td class="text-end text-warning fw-bold font-monospace">₹@seat.Price</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+
+                <!-- Total Amount & QR Stamp -->
+                <div class="p-4 rounded-3 d-flex flex-wrap justify-content-between align-items-center gap-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-glass);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-2 bg-white rounded-3">
+                            <i class="bi bi-qr-code text-dark fs-1"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">Digital Entry Pass</span>
+                            <strong class="text-white">Show QR code at cinema entry</strong>
+                        </div>
+                    </div>
+                    <div class="text-md-end">
+                        <span class="text-muted small d-block">Total Amount Paid</span>
+                        <h2 class="text-warning fw-bold mb-0 font-display">₹@Model.TotalAmount</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

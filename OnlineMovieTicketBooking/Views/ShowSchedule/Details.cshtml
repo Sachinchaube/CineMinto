@@ -1,0 +1,135 @@
+@model OnlineMovieTicketBooking.ViewModels.ShowScheduleVM
+
+@{
+    ViewData["Title"] = "Show Schedule Details";
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 mb-2">Showtime Info</span>
+            <h1 class="h3 fw-bold mb-0 text-white">Show Schedule #@Model.ShowScheduleId</h1>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-dark-outline btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Schedule
+            </a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.ShowScheduleId" class="btn btn-primary-cinema btn-sm">
+                    <i class="bi bi-pencil me-1"></i> Edit Show
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="admin-card p-4 h-100">
+                <h5 class="fw-bold text-white mb-4">
+                    <i class="bi bi-calendar-event text-danger me-2"></i>Screening Details
+                </h5>
+
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);">
+                            <small class="text-muted d-block mb-1">Movie</small>
+                            <span class="fw-bold text-white fs-6">
+                                <i class="bi bi-film text-danger me-1"></i>
+                                @(Model.Movie?.MovTitle ?? $"Movie #{Model.MovieId}")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);">
+                            <small class="text-muted d-block mb-1">Auditorium / Screen</small>
+                            <span class="fw-bold text-white fs-6">
+                                <i class="bi bi-display text-cyan me-1"></i>
+                                @(Model.Screen?.ScreenName ?? $"Screen #{Model.ScreenId}")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);">
+                            <small class="text-muted d-block mb-1">Date</small>
+                            <span class="fw-bold text-white">
+                                <i class="bi bi-calendar3 text-warning me-1"></i>
+                                @Model.ShowDate.ToString("dddd, dd MMM yyyy")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);">
+                            <small class="text-muted d-block mb-1">Show Timing</small>
+                            <span class="fw-bold text-white">
+                                <i class="bi bi-clock text-info me-1"></i>
+                                @Model.ShowStartTime - @Model.ShowEndTime
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);">
+                            <small class="text-muted d-block mb-1">Status</small>
+                            @if (Model.ShowIsActive)
+                            {
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Active Screening
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary bg-opacity-10 text-muted border border-secondary border-opacity-25 px-3 py-1">
+                                    <i class="bi bi-x-circle me-1"></i> Inactive
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+                    <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@Model.ShowScheduleId" class="btn btn-primary-cinema w-100 py-3 fw-bold">
+                        <i class="bi bi-ticket-perforated me-2"></i> Book Tickets For This Show
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="admin-card p-4 h-100">
+                <h5 class="fw-bold text-white mb-4">
+                    <i class="bi bi-cash-coin text-warning me-2"></i>Tiered Ticket Pricing
+                </h5>
+
+                <div class="vstack gap-3">
+                    <div class="p-3 rounded-3 d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-left: 4px solid #64748b;">
+                        <div>
+                            <span class="fw-bold text-white d-block">Regular Tier</span>
+                            <small class="text-muted">Standard viewing experience</small>
+                        </div>
+                        <span class="fs-4 fw-black text-white">₹@Model.RegularPrice</span>
+                    </div>
+
+                    <div class="p-3 rounded-3 d-flex align-items-center justify-content-between" style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-left: 4px solid var(--neon-cyan);">
+                        <div>
+                            <span class="fw-bold text-cyan d-block">Premium Tier</span>
+                            <small class="text-muted">Optimum viewing angle & extra comfort</small>
+                        </div>
+                        <span class="fs-4 fw-black text-cyan">₹@Model.PremiumPrice</span>
+                    </div>
+
+                    <div class="p-3 rounded-3 d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2); border-left: 4px solid #f59e0b;">
+                        <div>
+                            <span class="fw-bold text-warning d-block">VIP Recliner Tier</span>
+                            <small class="text-muted">Motorized luxury recliner & table service</small>
+                        </div>
+                        <span class="fs-4 fw-black text-warning">₹@Model.ReclinerPrice</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

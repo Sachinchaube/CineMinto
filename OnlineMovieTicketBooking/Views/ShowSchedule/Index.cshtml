@@ -1,0 +1,120 @@
+@model IEnumerable<OnlineMovieTicketBooking.ViewModels.ShowScheduleVM>
+
+@{
+    ViewData["Title"] = "Show Schedules & Timings";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="nav-admin-badge">ADMIN</span>
+            <h2 class="text-white fw-bold mb-0 font-display">Show Schedules & Pricing</h2>
+        </div>
+        <p class="text-secondary small mb-0">Program movie screenings, allocate auditoriums, and manage tiered pricing.</p>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-cinema">
+            <i class="bi bi-plus-lg"></i> Schedule New Show
+        </a>
+    }
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="admin-card text-center py-5">
+        <i class="bi bi-calendar-x text-muted display-4 mb-3"></i>
+        <h4 class="text-white font-display">No Shows Scheduled</h4>
+        <p class="text-secondary">Schedule movie showtimes across your screens.</p>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-cinema">
+                <i class="bi bi-plus-lg"></i> Schedule Show
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="admin-card">
+        <div class="table-responsive">
+            <table class="cinema-table">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Screen</th>
+                        <th>Date & Time</th>
+                        <th>Regular</th>
+                        <th>Premium</th>
+                        <th>Recliner</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="cinema-brand-icon" style="width: 32px; height: 32px; font-size: 0.9rem; border-radius: 6px;">
+                                        <i class="bi bi-film"></i>
+                                    </div>
+                                    <strong class="text-white">@(item.Movie?.MovTitle ?? "Movie")</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary bg-opacity-25 text-white">
+                                    <i class="bi bi-display me-1 text-info"></i>@(item.Screen?.ScreenName ?? "Screen")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="text-white font-display">@item.ShowDate.ToString("dd MMM yyyy")</div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-clock text-danger me-1"></i>@item.ShowStartTime.ToString(@"hh\:mm") - @item.ShowEndTime.ToString(@"hh\:mm")
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-secondary font-monospace">₹@item.RegularPrice</span>
+                            </td>
+                            <td>
+                                <span class="text-primary font-monospace">₹@item.PremiumPrice</span>
+                            </td>
+                            <td>
+                                <span class="text-warning font-monospace">₹@item.ReclinerPrice</span>
+                            </td>
+                            <td>
+                                @if (item.ShowIsActive)
+                                {
+                                    <span class="status-badge success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge cancelled">Inactive</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-1">
+                                    <a asp-action="Details" asp-route-id="@item.ShowScheduleId" class="btn btn-cinema-secondary btn-cinema-sm" title="Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.ShowScheduleId" class="btn btn-cinema-secondary btn-cinema-sm" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.ShowScheduleId" class="btn btn-cinema-danger btn-cinema-sm" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
