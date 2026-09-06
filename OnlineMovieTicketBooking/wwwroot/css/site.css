@@ -667,6 +667,22 @@ a:hover {
   color: var(--text-muted);
 }
 
+.theatre-showtimes-box {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.theatre-name-tag {
+  color: #e5a65d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
 /* ==========================================================================
    Auth / Login / Register
    ========================================================================== */

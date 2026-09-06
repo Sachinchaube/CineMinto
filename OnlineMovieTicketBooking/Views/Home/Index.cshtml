@@ -155,6 +155,8 @@
                 @foreach (var movie in Model)
                 {
                     var activeShows = movie.ShowSchedules?.Where(s => s.ShowIsActive).OrderBy(s => s.ShowDate).ThenBy(s => s.ShowStartTime).ToList();
+                    var primaryShow = activeShows?.FirstOrDefault();
+                    var theatreGroups = activeShows?.GroupBy(s => s.Screen?.Theatre?.TheaName ?? "Theatre").ToList();
 
                     <div class="col-xl-3 col-lg-4 col-sm-6 movie-search-card"
                          data-title="@(movie.MovTitle?.ToLower() ?? "")"
@@ -179,37 +181,53 @@
                                     </h5>
                                     @if (!string.IsNullOrEmpty(movie.MovGenre))
                                     {
-                                        <div class="movie-tags-clean">
+                                        <div class="movie-tags-clean mb-2">
                                             <span class="tag-chip">@movie.MovGenre</span>
                                         </div>
                                     }
                                 </div>
 
-                                <!-- Book Tickets / Available Showtimes Inside Card -->
+                                <!-- Book Tickets Button & Theatre Time Slots Inside -->
                                 <div class="mt-auto pt-2 border-top border-secondary border-opacity-25">
                                     @if (activeShows != null && activeShows.Any())
                                     {
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <small class="text-warning fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">BOOK TICKETS</small>
-                                            <small class="text-muted" style="font-size: 0.7rem;">@activeShows.Count slots</small>
-                                        </div>
-                                        <div class="d-flex flex-wrap gap-1">
-                                            @foreach (var show in activeShows)
+                                        @if (primaryShow != null)
+                                        {
+                                            <a asp-controller="Booking"
+                                               asp-action="SelectSeats"
+                                               asp-route-showScheduleId="@primaryShow.ShowScheduleId"
+                                               class="btn btn-primary-cinema w-100 py-2 fw-bold mb-2">
+                                                Book Tickets
+                                            </a>
+                                        }
+
+                                        <div class="d-flex flex-column gap-2">
+                                            @foreach (var theatreGroup in theatreGroups)
                                             {
-                                                <a asp-controller="Booking"
-                                                   asp-action="SelectSeats"
-                                                   asp-route-showScheduleId="@show.ShowScheduleId"
-                                                   class="btn-showtime-slot"
-                                                   title="@(show.Screen?.Theatre?.TheaName) - @(show.Screen?.ScreenName) | @show.ShowDate.ToString("dd MMM yyyy")">
-                                                    <span class="fw-bold text-white">@show.ShowStartTime.ToString(@"hh\:mm")</span>
-                                                    <span class="slot-date">@show.ShowDate.ToString("dd MMM")</span>
-                                                </a>
+                                                <div class="theatre-showtimes-box">
+                                                    <div class="theatre-name-tag">
+                                                        @theatreGroup.Key
+                                                    </div>
+                                                    <div class="d-flex flex-wrap gap-1">
+                                                        @foreach (var show in theatreGroup)
+                                                        {
+                                                            <a asp-controller="Booking"
+                                                               asp-action="SelectSeats"
+                                                               asp-route-showScheduleId="@show.ShowScheduleId"
+                                                               class="btn-showtime-slot"
+                                                               title="@(show.Screen?.ScreenName) | @show.ShowDate.ToString("dd MMM yyyy")">
+                                                                <span class="fw-bold text-white">@show.ShowStartTime.ToString(@"hh\:mm")</span>
+                                                                <span class="slot-date">@show.ShowDate.ToString("dd MMM")</span>
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                </div>
                                             }
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center justify-content-between pt-1">
                                             <small class="text-muted" style="font-size: 0.75rem;">No shows scheduled</small>
                                             <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-dark-outline btn-cinema-sm" style="font-size: 0.75rem; padding: 4px 10px !important;">
                                                 View Details
