@@ -2,72 +2,126 @@
 
 @{
     ViewData["Title"] = "Book Movie Tickets Online";
-    var featuredMovie = Model?.FirstOrDefault();
+    var latestMovies = Model?.OrderByDescending(m => m.MovRelDate).Take(5).ToList();
 }
 
 <div class="container hero-container">
-    <!-- Hero Section -->
-    <div class="row align-items-center g-5 mb-5 pb-3">
-        <!-- Left: Hero Copy & Search Bar -->
-        <div class="col-lg-7">
-            <h1 class="hero-heading">
-                Book Movie Tickets Online with Ease
-            </h1>
-            
-            <p class="hero-description">
-                Browse the latest releases, find showtimes at top multiplexes near you, select your preferred seats, and get instant digital passes.
-            </p>
+    <!-- Dynamic Banner Showing Latest Releases -->
+    @if (latestMovies != null && latestMovies.Any())
+    {
+        <div id="latestReleaseCarousel" class="carousel slide carousel-fade mb-5" data-bs-ride="carousel">
+            @if (latestMovies.Count > 1)
+            {
+                <div class="carousel-indicators">
+                    @for (int i = 0; i < latestMovies.Count; i++)
+                    {
+                        <button type="button"
+                                data-bs-target="#latestReleaseCarousel"
+                                data-bs-slide-to="@i"
+                                class="@(i == 0 ? "active" : "")"
+                                aria-current="@(i == 0 ? "true" : "false")"
+                                aria-label="Slide @(i + 1)">
+                        </button>
+                    }
+                </div>
+            }
 
-            <div class="search-bar-wrap">
-                <i class="bi bi-search"></i>
+            <div class="carousel-inner rounded-4 overflow-hidden shadow-lg" style="border: 1px solid var(--border-glass);">
+                @for (int i = 0; i < latestMovies.Count; i++)
+                {
+                    var movie = latestMovies[i];
+                    var nextShow = movie.ShowSchedules?.FirstOrDefault(s => s.ShowIsActive);
+
+                    <div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="6000">
+                        <div class="hero-banner-slide position-relative">
+                            <div class="hero-banner-bg" style="background-image: url('@(string.IsNullOrEmpty(movie.MovPosterUrl) ? "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80" : movie.MovPosterUrl)');"></div>
+                            <div class="hero-banner-overlay"></div>
+                            
+                            <div class="hero-banner-content container position-relative py-5">
+                                <div class="row align-items-center g-4">
+                                    <div class="col-lg-8">
+                                        <div class="d-inline-flex align-items-center gap-2 mb-2">
+                                            <span class="badge bg-warning text-dark fw-bold px-3 py-1">LATEST RELEASE</span>
+                                            @if (!string.IsNullOrEmpty(movie.MovGenre))
+                                            {
+                                                <span class="badge bg-dark bg-opacity-75 border border-secondary text-light px-3 py-1">@movie.MovGenre</span>
+                                            }
+                                        </div>
+
+                                        <h1 class="hero-heading text-white fw-black mb-2">
+                                            @movie.MovTitle
+                                        </h1>
+
+                                        <p class="hero-description text-light opacity-75 mb-4 max-w-xl text-truncate-2">
+                                            @(string.IsNullOrEmpty(movie.MovDescription) ? "Experience the latest blockbuster in premium cinema sound and visuals." : movie.MovDescription)
+                                        </p>
+
+                                        <div class="d-flex flex-wrap align-items-center gap-3">
+                                            @if (nextShow != null)
+                                            {
+                                                <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@nextShow.ShowScheduleId" class="btn btn-primary-cinema btn-lg px-4 py-3 fw-bold">
+                                                    Book Tickets
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-primary-cinema btn-lg px-4 py-3 fw-bold">
+                                                    View Details
+                                                </a>
+                                            }
+
+                                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-dark-outline btn-lg px-4 py-3">
+                                                Movie Info
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 d-none d-lg-block text-end">
+                                        <div class="hero-banner-poster-wrap d-inline-block">
+                                            <img src="@(string.IsNullOrEmpty(movie.MovPosterUrl) ? "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80" : movie.MovPosterUrl)"
+                                                 alt="@movie.MovTitle"
+                                                 class="hero-banner-poster img-fluid"
+                                                 onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80';" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (latestMovies.Count > 1)
+            {
+                <button class="carousel-control-prev" type="button" data-bs-target="#latestReleaseCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#latestReleaseCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            }
+        </div>
+    }
+
+    <!-- Search Bar -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="search-bar-wrap w-100" style="max-width: 100%;">
                 <input type="text"
                        id="movieSearchInput"
                        class="search-bar-input"
-                       placeholder="Search by movie title, language or genre..." />
+                       placeholder="Search movies by title, genre..." />
                 <button type="button" class="btn-search-shows" onclick="document.getElementById('now-showing').scrollIntoView({ behavior: 'smooth' });">
                     Search Shows
                 </button>
             </div>
         </div>
-
-        <!-- Right: Featured Spotlight Poster -->
-        <div class="col-lg-5 d-none d-lg-block">
-            @if (featuredMovie != null)
-            {
-                <div class="hero-featured-card">
-                    <img src="@(string.IsNullOrEmpty(featuredMovie.MovPosterUrl) ? "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80" : featuredMovie.MovPosterUrl)"
-                         alt="@featuredMovie.MovTitle"
-                         class="hero-featured-img"
-                         onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80';" />
-                    
-                    <div class="hero-rating-badge">
-                        9.2 / 10
-                    </div>
-
-                    <div class="hero-featured-action">
-                        @{
-                            var nextShow = featuredMovie.ShowSchedules?.FirstOrDefault(s => s.ShowIsActive);
-                        }
-                        @if (nextShow != null)
-                        {
-                            <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@nextShow.ShowScheduleId" class="btn-hero-book text-decoration-none">
-                                Select Showtimes
-                            </a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@featuredMovie.MovieId" class="btn-hero-book text-decoration-none">
-                                View Movie Details
-                            </a>
-                        }
-                    </div>
-                </div>
-            }
-        </div>
     </div>
 
     <!-- Now Showing Section -->
-    <div id="now-showing" class="pt-4 mb-5">
+    <div id="now-showing" class="pt-2 mb-5">
         <div class="d-flex align-items-end justify-content-between mb-4">
             <div>
                 <div class="section-subtitle">CURRENT SCHEDULE</div>
@@ -101,7 +155,6 @@
                 @foreach (var movie in Model)
                 {
                     var activeShows = movie.ShowSchedules?.Where(s => s.ShowIsActive).OrderBy(s => s.ShowDate).ThenBy(s => s.ShowStartTime).ToList();
-                    var primaryShow = activeShows?.FirstOrDefault();
 
                     <div class="col-xl-3 col-lg-4 col-sm-6 movie-search-card"
                          data-title="@(movie.MovTitle?.ToLower() ?? "")"
@@ -110,55 +163,34 @@
                         
                         <div class="movie-card-clean">
                             <div class="movie-poster-wrap">
-                                <img src="@(string.IsNullOrEmpty(movie.MovPosterUrl) ? "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" : movie.MovPosterUrl)"
-                                     alt="@movie.MovTitle"
-                                     onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80';" />
-                                
-                                <div class="movie-card-rating">
-                                    9.2 / 10
-                                </div>
-
-                                <div class="movie-card-book-wrap">
-                                    @if (primaryShow != null)
-                                    {
-                                        <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@primaryShow.ShowScheduleId" class="btn-book-tickets">
-                                            Book Tickets
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn-book-tickets">
-                                            View Details
-                                        </a>
-                                    }
-                                </div>
+                                <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId">
+                                    <img src="@(string.IsNullOrEmpty(movie.MovPosterUrl) ? "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" : movie.MovPosterUrl)"
+                                         alt="@movie.MovTitle"
+                                         onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80';" />
+                                </a>
                             </div>
 
                             <div class="movie-details-clean">
-                                <div>
+                                <div class="mb-2">
                                     <h5 class="movie-title-clean" title="@movie.MovTitle">
                                         <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="text-white text-decoration-none">
                                             @movie.MovTitle
                                         </a>
                                     </h5>
-                                    <div class="movie-meta-clean">
-                                        @(string.IsNullOrEmpty(movie.MovLanguage) ? "English" : movie.MovLanguage) • @movie.MovDuration min
-                                    </div>
-                                </div>
-                                <div class="movie-tags-clean mb-2">
                                     @if (!string.IsNullOrEmpty(movie.MovGenre))
                                     {
-                                        <span class="tag-chip">@movie.MovGenre</span>
+                                        <div class="movie-tags-clean">
+                                            <span class="tag-chip">@movie.MovGenre</span>
+                                        </div>
                                     }
-                                    <span class="tag-chip">@movie.MovRelDate.Year</span>
                                 </div>
 
-                                <!-- Available Showtimes Slots -->
-                                @if (activeShows != null && activeShows.Any())
-                                {
-                                    <div class="mt-2 pt-2 border-top border-secondary border-opacity-25">
+                                <!-- Book Tickets / Available Showtimes Inside Card -->
+                                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25">
+                                    @if (activeShows != null && activeShows.Any())
+                                    {
                                         <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <small class="text-warning fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">AVAILABLE SHOWTIMES</small>
+                                            <small class="text-warning fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">BOOK TICKETS</small>
                                             <small class="text-muted" style="font-size: 0.7rem;">@activeShows.Count slots</small>
                                         </div>
                                         <div class="d-flex flex-wrap gap-1">
@@ -174,14 +206,17 @@
                                                 </a>
                                             }
                                         </div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="mt-2 pt-2 border-top border-secondary border-opacity-25">
-                                        <small class="text-muted" style="font-size: 0.75rem;">No active showtimes</small>
-                                    </div>
-                                }
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <small class="text-muted" style="font-size: 0.75rem;">No shows scheduled</small>
+                                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-dark-outline btn-cinema-sm" style="font-size: 0.75rem; padding: 4px 10px !important;">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -190,9 +225,8 @@
 
             <!-- No Results Found Indicator for Search Filter -->
             <div id="noSearchResults" class="admin-card text-center py-5 d-none mt-4">
-                <i class="bi bi-search text-muted fs-2 mb-2"></i>
                 <h5 class="text-white">No Matching Movies Found</h5>
-                <p class="text-muted small mb-0">Try searching for a different title, genre, or language.</p>
+                <p class="text-muted small mb-0">Try searching for a different title or genre.</p>
             </div>
         }
     </div>
