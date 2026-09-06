@@ -17,7 +17,7 @@
         @if (User.IsInRole("Admin"))
         {
             <a asp-action="Create" class="btn btn-primary-cinema">
-                <i class="bi bi-plus-lg me-1"></i> Schedule New Show
+                Schedule New Show
             </a>
         }
     </div>
@@ -25,13 +25,12 @@
     @if (Model == null || !Model.Any())
     {
         <div class="admin-card text-center py-5 p-4">
-            <i class="bi bi-calendar-x text-muted fs-1 mb-3 d-block"></i>
             <h4 class="text-white font-display">No Shows Scheduled</h4>
             <p class="text-secondary small mb-4">Schedule movie showtimes across your screens.</p>
             @if (User.IsInRole("Admin"))
             {
                 <a asp-action="Create" class="btn btn-primary-cinema">
-                    <i class="bi bi-plus-lg me-1"></i> Schedule Show
+                    Schedule Show
                 </a>
             }
         </div>
@@ -58,25 +57,18 @@
                         {
                             <tr>
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="logo-box" style="width: 34px; height: 34px; font-size: 0.9rem;">
-                                            <i class="bi bi-film"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="text-white fw-bold mb-0">
-                                                @(item.Movie?.MovTitle ?? $"Movie #{item.MovieId}")
-                                            </h6>
-                                        </div>
-                                    </div>
+                                    <h6 class="text-white fw-bold mb-0">
+                                        @(item.Movie?.MovTitle ?? $"Movie #{item.MovieId}")
+                                    </h6>
                                 </td>
                                 <td>
                                     <span class="badge bg-dark border border-secondary border-opacity-50 text-light">
-                                        <i class="bi bi-display text-info me-1"></i>@(item.Screen?.ScreenName ?? $"Screen #{item.ScreenId}")
+                                        @(item.Screen?.ScreenName ?? $"Screen #{item.ScreenId}")
                                     </span>
                                 </td>
                                 <td>
                                     <div class="text-white fw-semibold small">@item.ShowDate.ToString("dd MMM yyyy")</div>
-                                    <small class="text-muted"><i class="bi bi-clock me-1"></i>@item.ShowStartTime - @item.ShowEndTime</small>
+                                    <small class="text-muted">@item.ShowStartTime - @item.ShowEndTime</small>
                                 </td>
                                 <td><span class="text-white font-monospace">₹@item.RegularPrice</span></td>
                                 <td><span class="text-info font-monospace">₹@item.PremiumPrice</span></td>

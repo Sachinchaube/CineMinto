@@ -9,7 +9,7 @@
         <div>
             <div class="section-subtitle">CATALOGUE</div>
             <h2 class="text-white fw-bold mb-1 font-display">
-                <i class="bi bi-film text-warning me-2"></i> Movies Directory
+                Movies Directory
             </h2>
             <p class="text-secondary small mb-0">Browse all movies, manage releases, and update movie information.</p>
         </div>
@@ -17,7 +17,7 @@
         @if (User.IsInRole("Admin"))
         {
             <a asp-action="Create" class="btn btn-primary-cinema">
-                <i class="bi bi-plus-lg me-1"></i> Add New Movie
+                Add New Movie
             </a>
         }
     </div>
@@ -25,13 +25,12 @@
     @if (Model == null || !Model.Any())
     {
         <div class="admin-card text-center py-5 p-4">
-            <i class="bi bi-film text-muted fs-1 mb-3 d-block"></i>
             <h4 class="text-white font-display">No Movies Found</h4>
             <p class="text-secondary small mb-4">Get started by creating your first movie entry.</p>
             @if (User.IsInRole("Admin"))
             {
                 <a asp-action="Create" class="btn btn-primary-cinema">
-                    <i class="bi bi-plus-lg me-1"></i> Add Movie
+                    Add Movie
                 </a>
             }
         </div>

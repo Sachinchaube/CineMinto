@@ -41,7 +41,7 @@
                          onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80';" />
                     
                     <div class="hero-rating-badge">
-                        <i class="bi bi-star-fill text-warning"></i> 9.2
+                        9.2 / 10
                     </div>
 
                     <div class="hero-featured-action">
@@ -51,13 +51,13 @@
                         @if (nextShow != null)
                         {
                             <a asp-controller="Booking" asp-action="SelectSeats" asp-route-showScheduleId="@nextShow.ShowScheduleId" class="btn-hero-book text-decoration-none">
-                                <i class="bi bi-ticket-perforated"></i> Select Showtimes
+                                Select Showtimes
                             </a>
                         }
                         else
                         {
                             <a asp-controller="Movie" asp-action="Details" asp-route-id="@featuredMovie.MovieId" class="btn-hero-book text-decoration-none">
-                                <i class="bi bi-info-circle"></i> View Movie Details
+                                View Movie Details
                             </a>
                         }
                     </div>
@@ -75,7 +75,7 @@
             </div>
             <div>
                 <a asp-controller="Movie" asp-action="Index" class="btn-catalog-pill text-decoration-none">
-                    View Full Catalog <i class="bi bi-arrow-right ms-1"></i>
+                    View Full Catalog
                 </a>
             </div>
         </div>
@@ -83,9 +83,6 @@
         @if (Model == null || Model.Count == 0)
         {
             <div class="admin-card text-center py-5 p-4">
-                <div class="mb-3 text-muted">
-                    <i class="bi bi-film fs-1"></i>
-                </div>
                 <h4 class="text-white">No Movies Currently Scheduled</h4>
                 <p class="text-secondary small max-w-md mx-auto mb-4">
                     New movie showtimes and blockbuster schedules will be listed shortly.
@@ -93,7 +90,7 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Movie" asp-action="Create" class="btn btn-primary-cinema">
-                        <i class="bi bi-plus-lg me-1"></i> Add New Movie
+                        Add New Movie
                     </a>
                 }
             </div>
@@ -118,7 +115,7 @@
                                      onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80';" />
                                 
                                 <div class="movie-card-rating">
-                                    <i class="bi bi-star-fill text-warning"></i> 9.2
+                                    9.2 / 10
                                 </div>
 
                                 <div class="movie-card-book-wrap">
