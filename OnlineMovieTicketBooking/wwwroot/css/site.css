@@ -118,11 +118,37 @@ a:hover {
 }
 
 .brand-logo-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Ambient soft warm-yellow glow on header around logo */
+.brand-logo-wrap::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.7);
+  width: 320px;
+  height: 90px;
+  background: radial-gradient(ellipse at 25% 50%, rgba(254, 240, 138, 0.15) 0%, rgba(229, 166, 93, 0.08) 50%, rgba(229, 166, 93, 0) 75%);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(14px);
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.brand-logo-wrap:hover::before {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
 }
 
 .brand-logo-wrap:hover {
@@ -130,20 +156,48 @@ a:hover {
 }
 
 .logo-mark {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
   filter: drop-shadow(0 2px 8px rgba(229, 166, 93, 0.25));
 }
 
+/* Emitting light beam projecting from front of the logo */
+.logo-mark::after {
+  content: "";
+  position: absolute;
+  left: 26px;
+  top: 50%;
+  transform: translateY(-50%) scaleX(0.4);
+  transform-origin: left center;
+  width: 130px;
+  height: 48px;
+  background: linear-gradient(90deg, rgba(255, 250, 220, 0.38) 0%, rgba(254, 240, 138, 0.20) 30%, rgba(229, 166, 93, 0.06) 70%, rgba(229, 166, 93, 0) 100%);
+  clip-path: polygon(0% 30%, 100% 0%, 100% 100%, 0% 70%);
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(3px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+
+.brand-logo-wrap:hover .logo-mark::after {
+  opacity: 1;
+  transform: translateY(-50%) scaleX(1);
+}
+
 .brand-logo-wrap:hover .logo-mark {
-  transform: scale(1.06) rotate(1deg);
-  filter: drop-shadow(0 4px 14px rgba(229, 166, 93, 0.5));
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.6)) drop-shadow(0 0 24px rgba(229, 166, 93, 0.35));
 }
 
 .brand-title {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-display);
   font-size: 1.4rem;
   font-weight: 900;
@@ -152,11 +206,22 @@ a:hover {
   line-height: 1;
   display: inline-flex;
   align-items: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: text-shadow 0.35s ease;
+}
+
+.brand-logo-wrap:hover .brand-title {
+  text-shadow: 0 0 10px rgba(254, 240, 138, 0.35), 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .brand-accent-text {
   color: #e5a65d;
   font-weight: 900;
+  transition: color 0.35s ease;
+}
+
+.brand-logo-wrap:hover .brand-accent-text {
+  color: #f7ba6f;
 }
 
 .nav-pill-link {
