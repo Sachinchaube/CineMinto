@@ -13,8 +13,8 @@
 <div class="row">
     <div class="col-lg-6 mx-auto">
         <div class="admin-card">
-            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
-                <div class="cinema-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                <div class="cinema-brand-icon" style="width: 42px; height: 42px; font-size: 1.25rem;">
                     <i class="bi bi-building-add"></i>
                 </div>
                 <div>
@@ -27,19 +27,25 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="mb-3">
-                    <label asp-for="TheaName" class="form-label">Theatre Name</label>
+                    <label asp-for="TheaName" class="form-label">
+                        <i class="bi bi-building"></i> Theatre Name
+                    </label>
                     <input asp-for="TheaName" class="form-control" placeholder="e.g. Cineplex IMAX Downtown, PVR Icon" />
                     <span asp-validation-for="TheaName" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="TheaCIty" class="form-label">City</label>
+                    <label asp-for="TheaCIty" class="form-label">
+                        <i class="bi bi-geo-alt"></i> City
+                    </label>
                     <input asp-for="TheaCIty" class="form-control" placeholder="e.g. Mumbai, New York, London" />
                     <span asp-validation-for="TheaCIty" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="TheaAddress" class="form-label">Street Address & Landmark</label>
+                    <label asp-for="TheaAddress" class="form-label">
+                        <i class="bi bi-map"></i> Street Address & Landmark
+                    </label>
                     <textarea asp-for="TheaAddress" class="form-control" rows="3" placeholder="e.g. 4th Floor, Nexus Mall, Grand Central Road"></textarea>
                     <span asp-validation-for="TheaAddress" class="text-danger small"></span>
                 </div>

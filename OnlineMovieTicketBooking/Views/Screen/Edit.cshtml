@@ -13,8 +13,8 @@
 <div class="row">
     <div class="col-lg-7 mx-auto">
         <div class="admin-card">
-            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
-                <div class="cinema-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                <div class="cinema-brand-icon" style="width: 42px; height: 42px; font-size: 1.25rem;">
                     <i class="bi bi-pencil-square"></i>
                 </div>
                 <div>
@@ -31,40 +31,52 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Theatre Branch</label>
+                        <label class="form-label">
+                            <i class="bi bi-building"></i> Theatre Branch
+                        </label>
                         <input value="@Model.Theatre?.TheaName" class="form-control" readonly />
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="ScreenName" class="form-label">Screen Name</label>
+                        <label asp-for="ScreenName" class="form-label">
+                            <i class="bi bi-tv"></i> Screen Name
+                        </label>
                         <input asp-for="ScreenName" class="form-control" />
                         <span asp-validation-for="ScreenName" class="text-danger small"></span>
                     </div>
 
                     <div class="col-12 mt-4">
                         <h6 class="text-white fw-bold font-display border-bottom border-secondary border-opacity-25 pb-2">
-                            <i class="bi bi-grid-3x3 text-danger me-1"></i> Configured Seating Capacity (Fixed Layout)
+                            <i class="bi bi-grid-3x3 text-warning me-1"></i> Configured Seating Capacity (Fixed Layout)
                         </h6>
                     </div>
 
                     <div class="col-md-3">
-                        <label asp-for="RegularSeats" class="form-label">Regular</label>
+                        <label asp-for="RegularSeats" class="form-label text-info">
+                            <i class="bi bi-square"></i> Regular
+                        </label>
                         <input asp-for="RegularSeats" class="form-control" readonly />
                     </div>
 
                     <div class="col-md-3">
-                        <label asp-for="PremiumSeats" class="form-label">Premium</label>
+                        <label asp-for="PremiumSeats" class="form-label text-warning">
+                            <i class="bi bi-star"></i> Premium
+                        </label>
                         <input asp-for="PremiumSeats" class="form-control" readonly />
                     </div>
 
                     <div class="col-md-3">
-                        <label asp-for="ReclinerSeats" class="form-label">Recliner</label>
+                        <label asp-for="ReclinerSeats" class="form-label text-danger">
+                            <i class="bi bi-award"></i> Recliner
+                        </label>
                         <input asp-for="ReclinerSeats" class="form-control" readonly />
                     </div>
 
                     <div class="col-md-3">
-                        <label asp-for="TotalSeats" class="form-label">Total</label>
-                        <input asp-for="TotalSeats" class="form-control" readonly />
+                        <label asp-for="TotalSeats" class="form-label text-success">
+                            <i class="bi bi-pie-chart"></i> Total
+                        </label>
+                        <input asp-for="TotalSeats" class="form-control fw-bold" readonly />
                     </div>
 
                     <div class="col-12 mt-3">

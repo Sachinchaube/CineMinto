@@ -13,8 +13,8 @@
 <div class="row">
     <div class="col-lg-7 mx-auto">
         <div class="admin-card">
-            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
-                <div class="cinema-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                <div class="cinema-brand-icon" style="width: 42px; height: 42px; font-size: 1.25rem;">
                     <i class="bi bi-display"></i>
                 </div>
                 <div>
@@ -28,7 +28,9 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label asp-for="TheatreId" class="form-label">Select Theatre</label>
+                        <label asp-for="TheatreId" class="form-label">
+                            <i class="bi bi-building"></i> Select Theatre
+                        </label>
                         <select asp-for="TheatreId" class="form-select" asp-items="ViewBag.TheatreId">
                             <option value="">Select Theatre</option>
                         </select>
@@ -36,31 +38,39 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="ScreenName" class="form-label">Screen Name</label>
+                        <label asp-for="ScreenName" class="form-label">
+                            <i class="bi bi-tv"></i> Screen Name
+                        </label>
                         <input asp-for="ScreenName" class="form-control" placeholder="e.g. Audi 1 (IMAX), Screen 2" />
                         <span asp-validation-for="ScreenName" class="text-danger small"></span>
                     </div>
 
                     <div class="col-12 mt-4">
                         <h6 class="text-white fw-bold font-display border-bottom border-secondary border-opacity-25 pb-2">
-                            <i class="bi bi-grid-3x3 text-danger me-1"></i> Seating Capacity by Category
+                            <i class="bi bi-grid-3x3 text-warning me-1"></i> Seating Capacity by Category
                         </h6>
                     </div>
 
                     <div class="col-md-4">
-                        <label asp-for="RegularSeats" class="form-label">Regular Seats</label>
+                        <label asp-for="RegularSeats" class="form-label text-info">
+                            <i class="bi bi-square"></i> Regular Seats
+                        </label>
                         <input asp-for="RegularSeats" type="number" class="form-control" placeholder="e.g. 50" />
                         <span asp-validation-for="RegularSeats" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-4">
-                        <label asp-for="PremiumSeats" class="form-label">Premium Seats</label>
+                        <label asp-for="PremiumSeats" class="form-label text-warning">
+                            <i class="bi bi-star"></i> Premium Seats
+                        </label>
                         <input asp-for="PremiumSeats" type="number" class="form-control" placeholder="e.g. 30" />
                         <span asp-validation-for="PremiumSeats" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-4">
-                        <label asp-for="ReclinerSeats" class="form-label">Recliner Seats</label>
+                        <label asp-for="ReclinerSeats" class="form-label text-danger">
+                            <i class="bi bi-award"></i> Recliner Seats
+                        </label>
                         <input asp-for="ReclinerSeats" type="number" class="form-control" placeholder="e.g. 10" />
                         <span asp-validation-for="ReclinerSeats" class="text-danger small"></span>
                     </div>
