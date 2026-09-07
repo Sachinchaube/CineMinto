@@ -1018,35 +1018,123 @@ a:hover {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 /* Form Controls Dark Theme */
 .form-label {
-  color: #ffffff;
+  color: #f1f5f9;
   font-weight: 600;
-  margin-bottom: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .form-control,
 .form-select {
   background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-glass);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
   border-radius: var(--radius-sm);
-  padding: 10px 14px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.38) !important;
+  font-style: normal;
 }
 
 .form-control:focus,
 .form-select:focus {
-  background-color: var(--bg-surface-elevated);
-  border-color: #e5a65d;
+  background-color: #162238;
+  border-color: var(--brand-primary);
   color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(229, 166, 93, 0.2);
+  box-shadow: 0 0 0 3px rgba(229, 166, 93, 0.25);
+  outline: none;
+}
+
+/* Custom Calendar & Number input icons in dark mode */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(50%) saturate(500%) hue-rotate(350deg);
+  cursor: pointer;
 }
 
 .form-select option {
   background-color: #18243b;
   color: #ffffff;
+}
+
+/* Live Poster Preview Box */
+.poster-preview-panel {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-poster-container {
+  position: relative;
+  background: #0b111e;
+  border: 2px dashed rgba(229, 166, 93, 0.35);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 2/3;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  min-height: 330px;
+  transition: all 0.3s ease;
+}
+
+.movie-poster-container:hover {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 20px rgba(229, 166, 93, 0.15);
+}
+
+.movie-poster-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #94a3b8;
+  padding: 24px;
+  text-align: center;
+}
+
+.movie-poster-fallback i {
+  font-size: 2.75rem;
+  color: var(--brand-primary);
+  opacity: 0.8;
+}
+
+.movie-poster-fallback .preview-hint {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
+.movie-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  transition: transform 0.3s ease;
+}
+
+.movie-poster-container:hover .movie-poster-img {
+  transform: scale(1.02);
 }
 
 /* Data Tables */

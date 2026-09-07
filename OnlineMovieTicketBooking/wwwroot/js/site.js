@@ -135,12 +135,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (posterInput && posterImg) {
         function refreshPosterPreview() {
-            const url = posterInput.value.trim();
-            if (url) {
+            const url = (posterInput.value || '').trim();
+            if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/'))) {
                 posterImg.src = url;
                 posterImg.style.display = 'block';
                 if (posterPlaceholder) posterPlaceholder.style.display = 'none';
             } else {
+                posterImg.removeAttribute('src');
                 posterImg.style.display = 'none';
                 if (posterPlaceholder) posterPlaceholder.style.display = 'flex';
             }
@@ -148,10 +149,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         posterImg.onerror = function () {
             this.style.display = 'none';
+            this.removeAttribute('src');
             if (posterPlaceholder) posterPlaceholder.style.display = 'flex';
         };
 
         posterInput.addEventListener('input', refreshPosterPreview);
+        posterInput.addEventListener('change', refreshPosterPreview);
         refreshPosterPreview();
     }
 });

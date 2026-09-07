@@ -11,9 +11,9 @@
 </div>
 
 <div class="admin-card">
-    <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
-        <div class="cinema-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
-            <i class="bi bi-plus-circle"></i>
+    <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+        <div class="cinema-brand-icon" style="width: 42px; height: 42px; font-size: 1.25rem;">
+            <i class="bi bi-film"></i>
         </div>
         <div>
             <h3 class="text-white fw-bold mb-0 font-display">Add New Movie</h3>
@@ -25,46 +25,61 @@
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <div class="row g-4">
+            <!-- Form Input Fields -->
             <div class="col-lg-8">
                 <div class="row g-3">
                     <div class="col-12">
-                        <label asp-for="MovTitle" class="form-label">Movie Title</label>
+                        <label asp-for="MovTitle" class="form-label">
+                            <i class="bi bi-type"></i> Movie Title
+                        </label>
                         <input asp-for="MovTitle" class="form-control" placeholder="e.g. Oppenheimer, Dune: Part Two" />
                         <span asp-validation-for="MovTitle" class="text-danger small"></span>
                     </div>
 
                     <div class="col-12">
-                        <label asp-for="MovDescription" class="form-label">Synopsis / Description</label>
+                        <label asp-for="MovDescription" class="form-label">
+                            <i class="bi bi-card-text"></i> Synopsis / Description
+                        </label>
                         <textarea asp-for="MovDescription" class="form-control" rows="4" placeholder="Brief story overview, cast, and plot details..."></textarea>
                         <span asp-validation-for="MovDescription" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="MovGenre" class="form-label">Genre</label>
+                        <label asp-for="MovGenre" class="form-label">
+                            <i class="bi bi-tags"></i> Genre
+                        </label>
                         <input asp-for="MovGenre" class="form-control" placeholder="e.g. Action, Sci-Fi, Drama" />
                         <span asp-validation-for="MovGenre" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="MovLanguage" class="form-label">Language</label>
+                        <label asp-for="MovLanguage" class="form-label">
+                            <i class="bi bi-translate"></i> Language
+                        </label>
                         <input asp-for="MovLanguage" class="form-control" placeholder="e.g. English, Hindi, Spanish" />
                         <span asp-validation-for="MovLanguage" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="MovDuration" class="form-label">Duration (in minutes)</label>
+                        <label asp-for="MovDuration" class="form-label">
+                            <i class="bi bi-clock-history"></i> Duration (in minutes)
+                        </label>
                         <input asp-for="MovDuration" type="number" class="form-control" placeholder="e.g. 148" />
                         <span asp-validation-for="MovDuration" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="MovRelDate" class="form-label">Release Date</label>
+                        <label asp-for="MovRelDate" class="form-label">
+                            <i class="bi bi-calendar-event"></i> Release Date
+                        </label>
                         <input asp-for="MovRelDate" type="date" class="form-control" />
                         <span asp-validation-for="MovRelDate" class="text-danger small"></span>
                     </div>
 
                     <div class="col-12">
-                        <label asp-for="MovPosterUrl" class="form-label">Poster Image URL</label>
+                        <label asp-for="MovPosterUrl" class="form-label">
+                            <i class="bi bi-link-45deg"></i> Poster Image URL
+                        </label>
                         <input asp-for="MovPosterUrl" id="posterUrlInput" class="form-control" placeholder="https://example.com/poster.jpg" />
                         <span asp-validation-for="MovPosterUrl" class="text-danger small"></span>
                     </div>
@@ -81,14 +96,19 @@
                 </div>
             </div>
 
-            <!-- Poster Preview Column -->
-            <div class="col-lg-4 text-center">
-                <label class="form-label d-block text-start">Live Poster Preview</label>
-                <div class="movie-poster-container rounded-4 shadow-lg border border-secondary border-opacity-25" style="max-width: 240px; margin: 0 auto; min-height: 320px;">
-                    <img id="posterPreviewImg" src="" alt="Poster Preview" class="movie-poster-img" style="display: none;" />
-                    <div id="posterPlaceholder" class="movie-poster-fallback">
-                        <i class="bi bi-image"></i>
-                        <span class="small">Enter a valid URL to preview</span>
+            <!-- Poster Preview Panel -->
+            <div class="col-lg-4">
+                <div class="poster-preview-panel">
+                    <label class="form-label mb-3">
+                        <i class="bi bi-image"></i> Live Poster Preview
+                    </label>
+                    <div class="movie-poster-container shadow-lg">
+                        <img id="posterPreviewImg" alt="Poster Preview" class="movie-poster-img" style="display: none;" />
+                        <div id="posterPlaceholder" class="movie-poster-fallback">
+                            <i class="bi bi-film"></i>
+                            <span class="fw-semibold text-white">No Poster Loaded</span>
+                            <span class="preview-hint">Paste an image link in the Poster URL field to preview it here.</span>
+                        </div>
                     </div>
                 </div>
             </div>
