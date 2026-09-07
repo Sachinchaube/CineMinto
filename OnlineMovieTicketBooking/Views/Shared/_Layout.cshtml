@@ -118,26 +118,30 @@
         </div>
     </footer>
 
-    <!-- Mento AI Floating Chatbot Widget -->
+    <!-- Mento VIP Cinema Concierge Chatbot Widget -->
     <div id="mentoAiContainer">
+        <!-- Floating Launcher with Greeting Tooltip -->
+        <div id="mentoAiGreeting" class="mento-ai-greeting">
+            <span>Need showtimes or movie suggestions? Ask <strong>Mento</strong></span>
+            <button id="mentoGreetingDismiss" class="mento-greeting-close" title="Dismiss" type="button"><i class="bi bi-x"></i></button>
+        </div>
+
         <!-- Floating Launcher Button -->
-        <button id="mentoAiLauncher" class="mento-ai-launcher" type="button" aria-label="Open Mento AI Cinema Assistant" title="Chat with Mento AI">
+        <button id="mentoAiLauncher" class="mento-ai-launcher" type="button" aria-label="Open CineMento Concierge" title="Chat with Mento Concierge">
             <div class="mento-ai-launcher-icon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.03 2 11C2 13.66 3.25 16.02 5.25 17.58L4.5 21.5L8.75 19.42C9.77 19.8 10.86 20 12 20C17.52 20 22 15.97 22 11C22 6.03 17.52 2 12 2Z" fill="url(#mentoAiGrad)" />
-                    <circle cx="8.5" cy="10.5" r="1.5" fill="#0B111E" />
-                    <circle cx="15.5" cy="10.5" r="1.5" fill="#0B111E" />
-                    <path d="M8.5 14C9.5 15.2 10.7 15.8 12 15.8C13.3 15.8 14.5 15.2 15.5 14" stroke="#0B111E" stroke-width="1.6" stroke-linecap="round" />
+                <svg width="28" height="28" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <linearGradient id="mentoAiGrad" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#FFE8A3" />
-                            <stop offset="0.5" stop-color="#F3B768" />
-                            <stop offset="1" stop-color="#D97706" />
+                        <linearGradient id="mentoGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFEBB0" />
+                            <stop offset="45%" stop-color="#F3B768" />
+                            <stop offset="100%" stop-color="#D97706" />
                         </linearGradient>
                     </defs>
+                    <path d="M22 4C12.06 4 4 12.06 4 22C4 31.94 12.06 40 22 40C27.1 40 31.7 37.9 35 34.4L30.2 30.1C28.1 32.2 25.2 33.5 22 33.5C15.65 33.5 10.5 28.35 10.5 22C10.5 15.65 15.65 10.5 22 10.5C25.2 10.5 28.1 11.8 30.2 13.9L35 9.6C31.7 6.1 27.1 4 22 4Z" fill="url(#mentoGoldGrad)" />
+                    <polygon points="18,16 26,22 18,28" fill="#FFFFFF" />
                 </svg>
             </div>
-            <span class="mento-ai-badge">AI</span>
+            <span class="mento-ai-badge">VIP</span>
         </button>
 
         <!-- Chat Modal Window -->
@@ -145,18 +149,18 @@
             <div class="mento-ai-header">
                 <div class="d-flex align-items-center gap-2">
                     <div class="mento-ai-avatar">
-                        <i class="bi bi-robot"></i>
+                        <i class="bi bi-film"></i>
                     </div>
                     <div>
-                        <div class="mento-ai-title">Mento AI</div>
-                        <div class="mento-ai-status"><span class="mento-ai-dot"></span> Cinema Assistant</div>
+                        <div class="mento-ai-title">Mento Concierge</div>
+                        <div class="mento-ai-status"><span class="mento-ai-dot"></span> CineMento VIP Services</div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-1">
-                    <button id="mentoAiReset" class="mento-ai-action-btn" title="Clear Chat" type="button">
+                    <button id="mentoAiReset" class="mento-ai-action-btn" title="Clear Conversation" type="button">
                         <i class="bi bi-arrow-counterclockwise"></i>
                     </button>
-                    <button id="mentoAiClose" class="mento-ai-action-btn" title="Close Mento AI" type="button">
+                    <button id="mentoAiClose" class="mento-ai-action-btn" title="Close Assistant" type="button">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
@@ -166,30 +170,35 @@
             <div id="mentoAiBody" class="mento-ai-body">
                 <div class="mento-msg mento-msg-bot">
                     <div class="mento-msg-bubble">
-                        Hello! I am <strong>Mento AI</strong>, your personal CineMento assistant. How can I assist you with movies, showtimes, or tickets today?
+                        <div class="mento-welcome-badge">CINEMENTO VIP ASSISTANT</div>
+                        Welcome to CineMento! I am <strong>Mento Concierge</strong>, your cinema guide. How can I tailor your movie experience today?
                     </div>
+                    <span class="mento-msg-time">Just now</span>
                 </div>
 
                 <!-- Quick Prompt Suggestions -->
                 <div id="mentoAiQuickPrompts" class="mento-quick-prompts">
                     <button type="button" class="mento-prompt-btn" data-query="What movies are currently showing?">
-                        Now Showing Movies
+                        <i class="bi bi-play-circle text-warning"></i> Now Showing Movies
                     </button>
                     <button type="button" class="mento-prompt-btn" data-query="How does ticket pricing and seating tiers work?">
-                        Ticket Pricing & Tiers
+                        <i class="bi bi-star text-warning"></i> Seating Tiers & Pricing
                     </button>
                     <button type="button" class="mento-prompt-btn" data-query="How do I book tickets step by step?">
-                        How to Book
+                        <i class="bi bi-ticket-detailed text-warning"></i> Guided Booking Steps
+                    </button>
+                    <button type="button" class="mento-prompt-btn" data-query="Where can I view my booking history and tickets?">
+                        <i class="bi bi-receipt text-warning"></i> My Ticket Passes
                     </button>
                     <button type="button" class="mento-prompt-btn" data-query="What are your cancellation and refund policies?">
-                        Cancellation Policy
+                        <i class="bi bi-shield-check text-warning"></i> Cancellation Policy
                     </button>
                 </div>
             </div>
 
             <!-- Input Bar -->
             <form id="mentoAiForm" class="mento-ai-footer" onsubmit="return false;">
-                <input type="text" id="mentoAiInput" class="mento-ai-input" placeholder="Ask about movies, timings, tickets..." autocomplete="off" />
+                <input type="text" id="mentoAiInput" class="mento-ai-input" placeholder="Ask about movies, showtimes, seats..." autocomplete="off" />
                 <button type="submit" id="mentoAiSend" class="mento-ai-send-btn" title="Send message">
                     <i class="bi bi-send-fill"></i>
                 </button>
