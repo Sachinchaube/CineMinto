@@ -213,8 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 mentoBody.innerHTML = `
                     <div class="mento-msg mento-msg-bot">
                         <div class="mento-msg-bubble">
-                            <div class="mento-welcome-badge">CINEMENTO VIP ASSISTANT</div>
-                            Conversation refreshed. How may I assist your movie experience today?
+                            Welcome to CineMento! I am <strong>Mento AI</strong>, your cinema assistant. How can I help you today?
                         </div>
                         <span class="mento-msg-time">${getCurrentTimeFormatted()}</span>
                     </div>
@@ -267,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 removeTypingIndicator();
                 const replyData = generateBotResponse(userText);
                 appendMessage(replyData.html, 'bot', true);
-            }, 500);
+            }, 400);
         }
 
         function appendMessage(content, sender, isHtml = false) {
@@ -324,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         bindQuickPrompts();
 
-        // Intelligent CineMento Concierge Knowledge Engine
+        // Intelligent CineMento Knowledge Engine
         function generateBotResponse(input) {
             const text = input.toLowerCase();
 
@@ -332,17 +331,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if (text.includes('movie') || text.includes('showing') || text.includes('release') || text.includes('catalog') || text.includes('film') || text.includes('watch') || text.includes('cinema')) {
                 return {
                     html: `
-                        <div>Experience current Hollywood & Bollywood blockbusters in crystal-clear 4K Laser Projection!</div>
+                        <div>Explore current blockbuster titles showing across our screens:</div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between mb-1">
-                                <span class="fw-bold text-white small"><i class="bi bi-camera-reels text-warning me-1"></i> Live Schedule</span>
-                                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 small" style="font-size: 0.65rem;">Now Playing</span>
+                                <span class="fw-bold text-white small"><i class="bi bi-film text-warning me-1"></i> Now Showing Movies</span>
+                                <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 small" style="font-size: 0.65rem;">Active</span>
                             </div>
-                            <div class="text-secondary small">Discover genres, high-definition trailers, durations, and show timings across all auditoriums.</div>
+                            <div class="text-secondary small">Check movie ratings, runtimes, genres, and live theatre schedules.</div>
                         </div>
                         <div class="mento-action-links">
-                            <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Browse Movie Catalog</a>
-                            <a href="/#explore-section" class="mento-action-link"><i class="bi bi-ticket-perforated"></i> Book Tickets Now</a>
+                            <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> View Movies Catalog</a>
+                            <a href="/#explore-section" class="mento-action-link"><i class="bi bi-ticket-perforated"></i> Book Tickets</a>
                         </div>
                     `
                 };
@@ -352,29 +351,29 @@ document.addEventListener('DOMContentLoaded', function () {
             if (text.includes('price') || text.includes('pricing') || text.includes('cost') || text.includes('tier') || text.includes('rate') || text.includes('recliner') || text.includes('premium') || text.includes('regular') || text.includes('seat')) {
                 return {
                     html: `
-                        <div>CineMento provides three tailored seating categories:</div>
+                        <div>CineMento provides three comfortable seating tiers:</div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between">
-                                <strong style="color: #38bdf8;"><i class="bi bi-check-circle me-1"></i> Regular Tier</strong>
-                                <span class="badge bg-info bg-opacity-20 text-info font-monospace small">Dolby 7.1</span>
+                                <strong class="text-white"><i class="bi bi-circle me-1 text-warning"></i> Regular Tier</strong>
+                                <span class="badge bg-warning bg-opacity-15 text-warning font-monospace small">Standard</span>
                             </div>
-                            <div class="text-secondary small mt-1">Ergonomic seating with crystal surround audio.</div>
+                            <div class="text-secondary small mt-1">Standard comfortable seats with Dolby surround sound.</div>
                         </div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between">
-                                <strong style="color: #e5a65d;"><i class="bi bi-star-fill me-1"></i> Premium Tier</strong>
-                                <span class="badge bg-warning bg-opacity-20 text-warning font-monospace small">VIP Center</span>
+                                <strong class="text-white"><i class="bi bi-star me-1 text-warning"></i> Premium Tier</strong>
+                                <span class="badge bg-warning bg-opacity-20 text-warning font-monospace small">Prime</span>
                             </div>
-                            <div class="text-secondary small mt-1">Optimal screen center angle with enhanced legroom.</div>
+                            <div class="text-secondary small mt-1">Center auditorium viewing with extra legroom.</div>
                         </div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between">
-                                <strong style="color: #f87171;"><i class="bi bi-award-fill me-1"></i> Recliner Tier</strong>
-                                <span class="badge bg-danger bg-opacity-20 text-danger font-monospace small">Ultra Luxury</span>
+                                <strong class="text-white"><i class="bi bi-gem me-1 text-warning"></i> Recliner Tier</strong>
+                                <span class="badge bg-warning bg-opacity-25 text-warning font-monospace small">Recliner</span>
                             </div>
-                            <div class="text-secondary small mt-1">Motorized recliners with personal service & plush cushioning.</div>
+                            <div class="text-secondary small mt-1">Motorized plush recliners with personal armrests.</div>
                         </div>
-                        <div class="mt-2 small text-muted">Exact prices are shown dynamically on the interactive seat map during booking.</div>
+                        <div class="mt-2 small text-secondary">Prices are displayed live during seat selection.</div>
                     `
                 };
             }
@@ -383,15 +382,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (text.includes('how to book') || text.includes('booking step') || text.includes('buy ticket') || text.includes('reserve') || text.includes('step')) {
                 return {
                     html: `
-                        <div>Quick 4-step booking process:</div>
+                        <div>Simple 4-step booking process:</div>
                         <div class="mento-card-item small">
-                            <div class="mb-1 text-light"><strong>1. Select Movie:</strong> Click on any movie poster or title.</div>
-                            <div class="mb-1 text-light"><strong>2. Choose Showtime:</strong> Pick your preferred theatre & timing slot.</div>
-                            <div class="mb-1 text-light"><strong>3. Select Seats:</strong> Click your favorite seats on the live seat map.</div>
-                            <div class="text-light"><strong>4. Confirm & Pay:</strong> Complete checkout via UPI, Card, or Net Banking for instant tickets!</div>
+                            <div class="mb-1 text-light"><strong>1. Select Movie:</strong> Choose your movie from Home or Movies page.</div>
+                            <div class="mb-1 text-light"><strong>2. Pick Showtime:</strong> Select your preferred theatre and time slot.</div>
+                            <div class="mb-1 text-light"><strong>3. Choose Seats:</strong> Click your preferred seats on the layout map.</div>
+                            <div class="text-light"><strong>4. Confirm & Pay:</strong> Complete checkout to get your confirmed tickets!</div>
                         </div>
                         <div class="mento-action-links">
-                            <a href="/Movie" class="mento-action-link"><i class="bi bi-play-circle"></i> Start Booking</a>
+                            <a href="/Movie" class="mento-action-link"><i class="bi bi-play-circle"></i> Browse Movies</a>
                         </div>
                     `
                 };
@@ -401,13 +400,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (text.includes('my booking') || text.includes('status') || text.includes('ticket') || text.includes('pass') || text.includes('receipt') || text.includes('history')) {
                 return {
                     html: `
-                        <div>All your confirmed tickets, show times, QR passes, and seat numbers are accessible under your account.</div>
-                        <div class="mento-card-item">
-                            <div class="text-light small fw-semibold"><i class="bi bi-qr-code text-warning me-1"></i> Digital Pass Ready</div>
-                            <div class="text-secondary small">Present your digital ticket at the auditorium entrance.</div>
-                        </div>
+                        <div>You can check all your booked movies, seats, and digital passes anytime in your account.</div>
                         <div class="mento-action-links">
-                            <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> View My Bookings</a>
+                            <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> Go to My Bookings</a>
                         </div>
                     `
                 };
@@ -418,15 +413,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 return {
                     html: `
                         <div class="mento-card-item">
-                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-shield-check me-1"></i> Hassle-Free Cancellation Policy</div>
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-shield-check me-1"></i> Cancellation & Refund Policy</div>
                             <ul class="mb-0 ps-3 text-secondary small">
-                                <li>Tickets can be cancelled up to <strong>2 hours prior to showtime</strong>.</li>
-                                <li>Instant credit initiation with bank settlement within <strong>3-5 business days</strong>.</li>
-                                <li>Manage your active bookings directly in your dashboard.</li>
+                                <li>Tickets can be cancelled up to <strong>2 hours before showtime</strong>.</li>
+                                <li>Refunds are automatically processed to your original payment method within <strong>3-5 business days</strong>.</li>
                             </ul>
                         </div>
                         <div class="mento-action-links">
-                            <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> Manage Bookings</a>
+                            <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> My Bookings</a>
                         </div>
                     `
                 };
@@ -437,8 +431,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return {
                     html: `
                         <div class="mento-card-item">
-                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-cup-straw me-1"></i> Gourmet Cinema Concessions</div>
-                            <div class="text-secondary small">Enjoy caramel & butter popcorn, hot nachos with cheese, artisanal pizzas, and cold-pressed beverages at our lobby concession bars.</div>
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-cup-straw me-1"></i> Concessions & Snacks</div>
+                            <div class="text-secondary small">Popcorn, nachos, cold drinks, and snacks are available at all theatre concession counters before and during intervals.</div>
                         </div>
                     `
                 };
@@ -449,21 +443,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 return {
                     html: `
                         <div class="mento-card-item">
-                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-soundwave me-1"></i> Next-Gen Cinema Experience</div>
-                            <div class="text-secondary small">Equipped with <strong>Dolby Atmos 7.1.4 3D audio</strong>, Barco 4K Laser projection, and acoustically tuned auditoriums for maximum immersion.</div>
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-soundwave me-1"></i> Cinema Experience</div>
+                            <div class="text-secondary small">All auditoriums feature 4K projection screens and Dolby Atmos surround sound for an immersive experience.</div>
                         </div>
                     `
                 };
             }
 
-            // 8. Greetings & Concierge Introduction
+            // 8. Greetings & Introduction
             if (text.includes('hello') || text.includes('hi') || text.includes('hey') || text.includes('help') || text.includes('who are you') || text.includes('mento')) {
                 return {
                     html: `
-                        <div>Greetings! I am <strong>Mento Concierge</strong>, your VIP Cinema Guide for CineMento.</div>
-                        <div class="mt-1 small text-secondary">I can guide you through movie selections, show schedules, seat tier features, or booking questions. How may I assist you?</div>
+                        <div>Hello! I am <strong>Mento AI</strong>, your cinema assistant.</div>
+                        <div class="mt-1 small text-secondary">I can help you explore movies, show schedules, seat tiers, or booking details. What would you like to know?</div>
                         <div class="mento-action-links">
-                            <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Explore Movies</a>
+                            <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Browse Movies</a>
                             <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-ticket-detailed"></i> My Bookings</a>
                         </div>
                     `
@@ -473,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // 9. Default Fallback
             return {
                 html: `
-                    <div>I am here to ensure you have an effortless cinema experience. Explore movies or view your tickets:</div>
+                    <div>I can assist you with movie showtimes, seat selections, or booking questions:</div>
                     <div class="mento-action-links">
                         <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Now Showing</a>
                         <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-ticket-detailed"></i> My Bookings</a>
@@ -483,5 +477,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
 
 

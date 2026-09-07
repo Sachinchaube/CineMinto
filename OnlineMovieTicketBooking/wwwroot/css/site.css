@@ -1267,21 +1267,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: drop-shadow(0 0 6px rgba(229, 166, 93, 0.5));
 }
 
-.mento-ai-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background: linear-gradient(135deg, #f3b768 0%, #d97706 100%);
-  color: #0b111e;
-  font-size: 0.62rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  padding: 2px 5px;
-  border-radius: 8px;
-  border: 2px solid #0b111e;
-  line-height: 1;
-}
-
 /* Chat Modal Window */
 .mento-ai-modal {
   position: fixed;
@@ -1431,19 +1416,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   line-height: 1.5;
   border-radius: 16px;
   word-break: break-word;
-}
-
-.mento-welcome-badge {
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: #e5a65d;
-  background: rgba(229, 166, 93, 0.12);
-  border: 1px solid rgba(229, 166, 93, 0.3);
-  padding: 2px 8px;
-  border-radius: 12px;
-  display: inline-block;
-  margin-bottom: 6px;
 }
 
 .mento-msg-bot .mento-msg-bubble {
