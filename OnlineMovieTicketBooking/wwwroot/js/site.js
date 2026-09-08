@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
         refreshPosterPreview();
     }
 
-    // 5. Mento VIP Cinema Concierge Engine
+    // 5. Mento AI Cinema Assistant Engine
     const mentoLauncher = document.getElementById('mentoAiLauncher');
     const mentoModal = document.getElementById('mentoAiModal');
     const mentoClose = document.getElementById('mentoAiClose');
@@ -202,6 +202,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        // Keyboard Shortcut: Escape to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mentoModal.style.display === 'flex') {
+                mentoModal.style.display = 'none';
+            }
+        });
+
         // Helper: Get formatted current time
         function getCurrentTimeFormatted() {
             return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -239,6 +246,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        // Fast Topic Navigation Chips at top
+        document.querySelectorAll('.mento-topic-chip').forEach(chip => {
+            chip.addEventListener('click', function () {
+                const topic = this.getAttribute('data-topic');
+                const topicMap = {
+                    'movies': 'What movies are currently showing?',
+                    'pricing': 'How does seating tiers and pricing work?',
+                    'booking': 'How do I book tickets step by step?',
+                    'passes': 'Where can I find my booking history and tickets?',
+                    'snacks': 'What snacks and food are available at the theatre?',
+                    'payments': 'What payment methods do you accept?',
+                    'refunds': 'What is your cancellation and refund policy?',
+                    'theatres': 'Tell me about your theatres, screens and audio technology'
+                };
+                const query = topicMap[topic] || 'Tell me more about ' + topic;
+                processUserQuery(query);
+            });
+        });
+
         // Send User Message
         function handleUserSubmit() {
             const query = mentoInput.value.trim();
@@ -265,8 +291,8 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => {
                 removeTypingIndicator();
                 const replyData = generateBotResponse(userText);
-                appendMessage(replyData.html, 'bot', true);
-            }, 400);
+                appendBotMessageWithFollowups(replyData.html, replyData.followups || []);
+            }, 350);
         }
 
         function appendMessage(content, sender, isHtml = false) {
@@ -280,6 +306,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 bubbleDiv.innerHTML = content;
             } else {
                 bubbleDiv.textContent = content;
+            }
+
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'mento-msg-time';
+            timeSpan.textContent = getCurrentTimeFormatted();
+
+            msgDiv.appendChild(bubbleDiv);
+            msgDiv.appendChild(timeSpan);
+            mentoBody.appendChild(msgDiv);
+            mentoBody.scrollTop = mentoBody.scrollHeight;
+        }
+
+        function appendBotMessageWithFollowups(htmlContent, followups = []) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'mento-msg mento-msg-bot';
+
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'mento-msg-bubble';
+            bubbleDiv.innerHTML = htmlContent;
+
+            // Append Followup Chips if provided
+            if (followups && followups.length > 0) {
+                const followupContainer = document.createElement('div');
+                followupContainer.className = 'mento-followup-container';
+                followups.forEach(prompt => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'mento-followup-chip';
+                    btn.innerHTML = `<i class="bi bi-chevron-right text-warning"></i> ${prompt}`;
+                    btn.addEventListener('click', () => {
+                        processUserQuery(prompt);
+                    });
+                    followupContainer.appendChild(btn);
+                });
+                bubbleDiv.appendChild(followupContainer);
             }
 
             const timeSpan = document.createElement('span');
@@ -323,160 +384,280 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         bindQuickPrompts();
 
-        // Intelligent CineMento Knowledge Engine
+        // Helper: Extract current movie titles from DOM if available
+        function getLiveMoviesFromDOM() {
+            const titles = [];
+            document.querySelectorAll('.movie-search-card, .movie-item-wrapper, .movie-card-clean').forEach(card => {
+                const title = card.getAttribute('data-title') || card.querySelector('.movie-clean-title, h5, h6')?.textContent?.trim();
+                const genre = card.getAttribute('data-genre') || card.querySelector('.badge')?.textContent?.trim() || 'Featured';
+                if (title && !titles.some(m => m.title.toLowerCase() === title.toLowerCase())) {
+                    titles.push({ title, genre });
+                }
+            });
+            return titles;
+        }
+
+        // Intelligent CineMento Knowledge & Intent Engine
         function generateBotResponse(input) {
             const text = input.toLowerCase();
 
-            // 1. Movies / Now Showing / Watch / Catalog
-            if (text.includes('movie') || text.includes('showing') || text.includes('release') || text.includes('catalog') || text.includes('film') || text.includes('watch') || text.includes('cinema')) {
+            // 1. Live Movies / Showing / Catalog / Search
+            if (text.includes('movie') || text.includes('showing') || text.includes('release') || text.includes('catalog') || text.includes('film') || text.includes('watch') || text.includes('cinema') || text.includes('search')) {
+                const domMovies = getLiveMoviesFromDOM();
+                let movieListHtml = '';
+                if (domMovies.length > 0) {
+                    const preview = domMovies.slice(0, 3);
+                    movieListHtml = preview.map(m => `
+                        <div class="d-flex align-items-center justify-content-between py-1 border-bottom border-secondary border-opacity-25 small">
+                            <span class="text-light fw-medium"><i class="bi bi-play-circle text-warning me-1"></i> ${m.title}</span>
+                            <span class="badge bg-warning bg-opacity-20 text-warning font-monospace" style="font-size: 0.65rem;">${m.genre}</span>
+                        </div>
+                    `).join('');
+                }
+
                 return {
                     html: `
-                        <div>Explore current blockbuster titles showing across our screens:</div>
+                        <div>Explore our current blockbuster lineup in 4K Laser Projection:</div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between mb-1">
-                                <span class="fw-bold text-white small"><i class="bi bi-film text-warning me-1"></i> Now Showing Movies</span>
-                                <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 small" style="font-size: 0.65rem;">Active</span>
+                                <span class="fw-bold text-white small"><i class="bi bi-camera-reels text-warning me-1"></i> Featured Schedule</span>
+                                <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 small" style="font-size: 0.65rem;">Now Playing</span>
                             </div>
-                            <div class="text-secondary small">Check movie ratings, runtimes, genres, and live theatre schedules.</div>
+                            ${movieListHtml ? `<div class="mb-2 mt-2">${movieListHtml}</div>` : `<div class="text-secondary small">Browse high-definition titles, runtimes, and auditoriums across CineMento.</div>`}
                         </div>
                         <div class="mento-action-links">
-                            <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> View Movies Catalog</a>
+                            <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Browse Movie Catalog</a>
                             <a href="/#explore-section" class="mento-action-link"><i class="bi bi-ticket-perforated"></i> Book Tickets</a>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'How does ticket pricing and seating work?',
+                        'How do I book tickets step by step?',
+                        'What are your cancellation policies?'
+                    ]
                 };
             }
 
-            // 2. Seating Tiers & Pricing
+            // 2. Seating Tiers & Pricing Breakdown
             if (text.includes('price') || text.includes('pricing') || text.includes('cost') || text.includes('tier') || text.includes('rate') || text.includes('recliner') || text.includes('premium') || text.includes('regular') || text.includes('seat')) {
                 return {
                     html: `
-                        <div>CineMento provides three comfortable seating tiers:</div>
+                        <div>CineMento provides three tailored seating tiers:</div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between">
-                                <strong class="text-white"><i class="bi bi-circle me-1 text-warning"></i> Regular Tier</strong>
+                                <strong class="text-white"><i class="bi bi-circle text-warning me-1"></i> Regular Tier</strong>
                                 <span class="badge bg-warning bg-opacity-15 text-warning font-monospace small">Standard</span>
                             </div>
-                            <div class="text-secondary small mt-1">Standard comfortable seats with Dolby surround sound.</div>
+                            <div class="text-secondary small mt-1">Ergonomic seating with Dolby surround audio clarity.</div>
                         </div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between">
-                                <strong class="text-white"><i class="bi bi-star me-1 text-warning"></i> Premium Tier</strong>
-                                <span class="badge bg-warning bg-opacity-20 text-warning font-monospace small">Prime</span>
+                                <strong class="text-white"><i class="bi bi-star text-warning me-1"></i> Premium Tier</strong>
+                                <span class="badge bg-warning bg-opacity-20 text-warning font-monospace small">Center Prime</span>
                             </div>
-                            <div class="text-secondary small mt-1">Center auditorium viewing with extra legroom.</div>
+                            <div class="text-secondary small mt-1">Center auditorium direct line-of-sight with expanded legroom.</div>
                         </div>
                         <div class="mento-card-item">
                             <div class="d-flex align-items-center justify-content-between">
-                                <strong class="text-white"><i class="bi bi-gem me-1 text-warning"></i> Recliner Tier</strong>
-                                <span class="badge bg-warning bg-opacity-25 text-warning font-monospace small">Recliner</span>
+                                <strong class="text-white"><i class="bi bi-gem text-warning me-1"></i> Recliner Tier</strong>
+                                <span class="badge bg-warning bg-opacity-25 text-warning font-monospace small">Motorized Luxury</span>
                             </div>
-                            <div class="text-secondary small mt-1">Motorized plush recliners with personal armrests.</div>
+                            <div class="text-secondary small mt-1">Plush motorized recliners with personal service & ultra-soft cushioning.</div>
                         </div>
-                        <div class="mt-2 small text-secondary">Prices are displayed live during seat selection.</div>
-                    `
+                        <div class="mt-2 small text-secondary">Specific rates are calculated live on the interactive seat layout during booking.</div>
+                    `,
+                    followups: [
+                        'How do I book tickets step by step?',
+                        'What payment methods do you accept?',
+                        'What movies are currently showing?'
+                    ]
                 };
             }
 
             // 3. Guided Step-by-Step Booking
-            if (text.includes('how to book') || text.includes('booking step') || text.includes('buy ticket') || text.includes('reserve') || text.includes('step')) {
+            if (text.includes('how to book') || text.includes('booking step') || text.includes('buy ticket') || text.includes('reserve') || text.includes('step') || text.includes('procedure')) {
                 return {
                     html: `
                         <div>Simple 4-step booking process:</div>
                         <div class="mento-card-item small">
-                            <div class="mb-1 text-light"><strong>1. Select Movie:</strong> Choose your movie from Home or Movies page.</div>
-                            <div class="mb-1 text-light"><strong>2. Pick Showtime:</strong> Select your preferred theatre and time slot.</div>
-                            <div class="mb-1 text-light"><strong>3. Choose Seats:</strong> Click your preferred seats on the layout map.</div>
-                            <div class="text-light"><strong>4. Confirm & Pay:</strong> Complete checkout to get your confirmed tickets!</div>
+                            <div class="mb-1 text-light"><strong>1. Select Movie:</strong> Click on your preferred movie from the Movies page or Home.</div>
+                            <div class="mb-1 text-light"><strong>2. Choose Showtime:</strong> Pick your theatre and preferred showtime slot.</div>
+                            <div class="mb-1 text-light"><strong>3. Select Seats:</strong> Click on your favorite available seats on the live seat map.</div>
+                            <div class="text-light"><strong>4. Confirm & Pay:</strong> Complete checkout via UPI or Card to receive your digital pass!</div>
                         </div>
                         <div class="mento-action-links">
-                            <a href="/Movie" class="mento-action-link"><i class="bi bi-play-circle"></i> Browse Movies</a>
+                            <a href="/Movie" class="mento-action-link"><i class="bi bi-play-circle"></i> Start Booking</a>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'What payment methods do you accept?',
+                        'Where can I view my booking history and tickets?',
+                        'What is your cancellation and refund policy?'
+                    ]
                 };
             }
 
-            // 4. Ticket History & Pass Lookup
-            if (text.includes('my booking') || text.includes('status') || text.includes('ticket') || text.includes('pass') || text.includes('receipt') || text.includes('history')) {
+            // 4. Ticket History, Passes & Receipts
+            if (text.includes('my booking') || text.includes('status') || text.includes('ticket') || text.includes('pass') || text.includes('receipt') || text.includes('history') || text.includes('download')) {
                 return {
                     html: `
-                        <div>You can check all your booked movies, seats, and digital passes anytime in your account.</div>
+                        <div>Access all your confirmed bookings, digital QR passes, and seat numbers:</div>
+                        <div class="mento-card-item">
+                            <div class="text-light small fw-semibold"><i class="bi bi-qr-code text-warning me-1"></i> Paperless Digital Admission</div>
+                            <div class="text-secondary small">Present your digital ticket QR code directly from your phone at the auditorium entrance.</div>
+                        </div>
                         <div class="mento-action-links">
                             <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> Go to My Bookings</a>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'What is your cancellation and refund policy?',
+                        'What snacks and food are available at the theatre?',
+                        'What movies are currently showing?'
+                    ]
                 };
             }
 
             // 5. Cancellation & Refunds
-            if (text.includes('cancel') || text.includes('refund') || text.includes('reschedule') || text.includes('return')) {
+            if (text.includes('cancel') || text.includes('refund') || text.includes('reschedule') || text.includes('return') || text.includes('money')) {
                 return {
                     html: `
                         <div class="mento-card-item">
                             <div class="text-warning fw-bold small mb-1"><i class="bi bi-shield-check me-1"></i> Cancellation & Refund Policy</div>
                             <ul class="mb-0 ps-3 text-secondary small">
-                                <li>Tickets can be cancelled up to <strong>2 hours before showtime</strong>.</li>
-                                <li>Refunds are automatically processed to your original payment method within <strong>3-5 business days</strong>.</li>
+                                <li>Tickets can be cancelled up to <strong>2 hours prior to showtime</strong>.</li>
+                                <li>Refunds are initiated instantly and credited to your original payment method within <strong>3–5 business days</strong>.</li>
+                                <li>Active bookings can be managed from your account dashboard.</li>
                             </ul>
                         </div>
                         <div class="mento-action-links">
-                            <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> My Bookings</a>
+                            <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-receipt"></i> Manage Bookings</a>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'Where can I view my booking history and tickets?',
+                        'What payment methods do you accept?',
+                        'How do I book tickets step by step?'
+                    ]
                 };
             }
 
-            // 6. Food & Concessions
-            if (text.includes('food') || text.includes('snack') || text.includes('popcorn') || text.includes('drink') || text.includes('beverage') || text.includes('eat') || text.includes('dining')) {
+            // 6. Food, Snacks & Concessions
+            if (text.includes('food') || text.includes('snack') || text.includes('popcorn') || text.includes('drink') || text.includes('beverage') || text.includes('eat') || text.includes('dining') || text.includes('nachos') || text.includes('canteen')) {
                 return {
                     html: `
                         <div class="mento-card-item">
-                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-cup-straw me-1"></i> Concessions & Snacks</div>
-                            <div class="text-secondary small">Popcorn, nachos, cold drinks, and snacks are available at all theatre concession counters before and during intervals.</div>
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-cup-straw me-1"></i> Gourmet Concessions Bar</div>
+                            <div class="text-secondary small">Enjoy our signature butter & caramel popcorn, artisanal nachos with hot cheese sauce, fresh pizza slices, and cold beverages at all lobby counters before showtime and during intermissions.</div>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'What movies are currently showing?',
+                        'How does seating tiers and pricing work?',
+                        'How do I book tickets step by step?'
+                    ]
                 };
             }
 
-            // 7. Technology & Sound Experience
-            if (text.includes('sound') || text.includes('dolby') || text.includes('atmos') || text.includes('screen') || text.includes('laser') || text.includes('audi') || text.includes('theatre') || text.includes('theater')) {
+            // 7. Payment Methods & Security
+            if (text.includes('pay') || text.includes('upi') || text.includes('card') || text.includes('gpay') || text.includes('phonepe') || text.includes('netbanking') || text.includes('wallet')) {
                 return {
                     html: `
                         <div class="mento-card-item">
-                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-soundwave me-1"></i> Cinema Experience</div>
-                            <div class="text-secondary small">All auditoriums feature 4K projection screens and Dolby Atmos surround sound for an immersive experience.</div>
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-credit-card me-1"></i> Supported Payment Methods</div>
+                            <div class="text-secondary small mb-2">We support 100% secure, encrypted instant checkout via:</div>
+                            <ul class="mb-0 ps-3 text-secondary small">
+                                <li><strong>UPI:</strong> Google Pay, PhonePe, Paytm, BHIM & all bank UPI apps.</li>
+                                <li><strong>Cards:</strong> Visa, MasterCard, RuPay Debit & Credit Cards.</li>
+                                <li><strong>Net Banking:</strong> All major commercial banks.</li>
+                            </ul>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'How do I book tickets step by step?',
+                        'What is your cancellation and refund policy?',
+                        'What movies are currently showing?'
+                    ]
                 };
             }
 
-            // 8. Greetings & Introduction
-            if (text.includes('hello') || text.includes('hi') || text.includes('hey') || text.includes('help') || text.includes('who are you') || text.includes('mento')) {
+            // 8. Theatres, Screens & Sound Experience
+            if (text.includes('theatre') || text.includes('theater') || text.includes('screen') || text.includes('sound') || text.includes('dolby') || text.includes('atmos') || text.includes('laser') || text.includes('audi') || text.includes('location')) {
+                return {
+                    html: `
+                        <div class="mento-card-item">
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-soundwave me-1"></i> Premium Cinema Technology</div>
+                            <ul class="mb-0 ps-3 text-secondary small">
+                                <li><strong>Audio:</strong> Dolby Atmos 7.1.4 multi-dimensional surround sound.</li>
+                                <li><strong>Visuals:</strong> High-luminance 4K RGB Laser projection for sharp contrast.</li>
+                                <li><strong>Auditoriums:</strong> Acoustically treated auditoriums with climate control.</li>
+                            </ul>
+                        </div>
+                    `,
+                    followups: [
+                        'What movies are currently showing?',
+                        'How does seating tiers and pricing work?',
+                        'What snacks and food are available at the theatre?'
+                    ]
+                };
+            }
+
+            // 9. Discounts, Offers & Promo Codes
+            if (text.includes('discount') || text.includes('offer') || text.includes('coupon') || text.includes('promo') || text.includes('deal') || text.includes('student')) {
+                return {
+                    html: `
+                        <div class="mento-card-item">
+                            <div class="text-warning fw-bold small mb-1"><i class="bi bi-tag me-1"></i> Offers & Concessions</div>
+                            <div class="text-secondary small">Special festival promo codes and bank discounts can be applied directly on the payment checkout page. Keep an eye out for weekend matinee specials!</div>
+                        </div>
+                    `,
+                    followups: [
+                        'What movies are currently showing?',
+                        'How do I book tickets step by step?',
+                        'What payment methods do you accept?'
+                    ]
+                };
+            }
+
+            // 10. Greetings & Assistant Introduction
+            if (text.includes('hello') || text.includes('hi') || text.includes('hey') || text.includes('help') || text.includes('who are you') || text.includes('mento') || text.includes('about')) {
                 return {
                     html: `
                         <div>Hello! I am <strong>Mento AI</strong>, your cinema assistant.</div>
-                        <div class="mt-1 small text-secondary">I can help you explore movies, show schedules, seat tiers, or booking details. What would you like to know?</div>
+                        <div class="mt-1 small text-secondary">I can guide you through current movie listings, show schedules, seat categories, payments, or booking management. How may I assist you today?</div>
                         <div class="mento-action-links">
                             <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Browse Movies</a>
                             <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-ticket-detailed"></i> My Bookings</a>
                         </div>
-                    `
+                    `,
+                    followups: [
+                        'What movies are currently showing?',
+                        'How does seating tiers and pricing work?',
+                        'How do I book tickets step by step?'
+                    ]
                 };
             }
 
-            // 9. Default Fallback
+            // 11. Default Fallback with Helpful Actions
             return {
                 html: `
-                    <div>I can assist you with movie showtimes, seat selections, or booking questions:</div>
+                    <div>I can help you discover movies, understand seat tiers, check showtimes, or guide your booking:</div>
                     <div class="mento-action-links">
-                        <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Now Showing</a>
+                        <a href="/Movie" class="mento-action-link"><i class="bi bi-film"></i> Now Showing Movies</a>
                         <a href="/Booking/MyBookings" class="mento-action-link"><i class="bi bi-ticket-detailed"></i> My Bookings</a>
                     </div>
-                `
+                `,
+                followups: [
+                    'What movies are currently showing?',
+                    'How does seating tiers and pricing work?',
+                    'How do I book tickets step by step?',
+                    'What is your cancellation and refund policy?'
+                ]
             };
         }
     }
 });
+
 
 
 
